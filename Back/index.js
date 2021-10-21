@@ -19,7 +19,7 @@ app.use(cors())
 const port = 5300;
 
 app.get('/', (req,res)=>{
-    async function runTest() {
+    const conexion =  async()=> {
         let conn;
        
         try {
@@ -42,7 +42,7 @@ app.get('/', (req,res)=>{
           }
         }
       }
-    runTest()
+    conexion()
     res.send({home:"hola mundo"})
 })
 
