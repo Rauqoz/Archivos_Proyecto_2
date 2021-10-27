@@ -10,31 +10,21 @@ const config_db = {
     password : 'dummy',
     connectString : '172.17.0.2:1521/ORCL18'
 }
-
 require('dotenv').config()
-
 app.use(cors())
-
 const port = 5300;
-var usuario_actual = '';
 
+//variables internas
+var usuario_actual = {user: 'Rau', rol:'admin',name:'Rau'};
+//var usuario_actual ;
 
-
-app.get('/', (req,res)=>{
-    usuario_actual = 18;
-    res.send({data:usuario_actual})
+app.get('/usuario_actual', (req,res)=>{
+    res.send(usuario_actual)
 })
-
-
-app.get('/1',(req,res)=>{
-  
-  res.send({data:usuario_actual})
-})
-
-
 
 
 app.get('/con', (req,res)=>{
+  let datos;
   const conexion =  async()=> {
     let conn;
    
@@ -44,7 +34,7 @@ app.get('/con', (req,res)=>{
       const result = await conn.execute(
         'select * from \"prueba\"'
       );
-   
+      datos = result;
       console.log(result);
     } catch (err) {
       console.log(err);
@@ -61,7 +51,6 @@ app.get('/con', (req,res)=>{
   conexion()
   res.send({data:"con"})
 })
-
 
 app.listen(port, async ()=>{
     

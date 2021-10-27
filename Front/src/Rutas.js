@@ -6,19 +6,19 @@ import {
   } from "react-router-dom";
 import Home from './components/Home'
 import Login from './components/Login'
-import {actual} from './actual.json'
+import Access from './components/Access'
 
 
 const Rutas = props => {
     return (
         <Router>
             <Switch>
-                <Route exact path='/' component={()=> <Home valor={actual}  />}>
+                <Route exact path='/' component={()=> <Home/>}/>
 
-                </Route>
-                <Route path='/login' component={()=> <Login valor={actual}/>}>
+                <Route path='/login' component={()=> <Login/>}/>
 
-                </Route>
+                <Route path='/access' component={()=> <Access/>}/>
+
             </Switch>
         </Router>
     )

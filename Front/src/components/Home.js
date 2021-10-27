@@ -1,11 +1,13 @@
 import React, { Fragment } from 'react'
 import Barra from './Barra'
+import Carrusel from './Carrusel'
 
-const Home = ({valor}) => {
+const Home = () => {
+    
     return (
         <Fragment>
-            <p>{valor}</p>
             <Barra/>
+            <Carrusel/>
         </Fragment>
     )
 }
