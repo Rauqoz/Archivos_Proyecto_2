@@ -1,0 +1,682 @@
+/*
+ Navicat Oracle Data Transfer
+
+ Source Server         : 172.17.0.2_1521_ORCL18
+ Source Server Type    : Oracle
+ Source Server Version : 180000
+ Source Host           : 172.17.0.2:1521
+ Source Schema         : DUMMY
+
+ Target Server Type    : Oracle
+ Target Server Version : 180000
+ File Encoding         : 65001
+
+ Date: 26/10/2021 19:28:29
+*/
+
+
+-- ----------------------------
+-- Table structure for CATEGORIA
+-- ----------------------------
+DROP TABLE "CATEGORIA";
+CREATE TABLE "CATEGORIA" (
+  "ID_CATEGORIA" NUMBER VISIBLE DEFAULT "DUMMY"."ID_CATEGORIA"."NEXTVAL" NOT NULL,
+  "NOMBRE" VARCHAR2(100 BYTE) VISIBLE
+)
+LOGGING
+NOCOMPRESS
+PCTFREE 10
+INITRANS 1
+STORAGE (
+  BUFFER_POOL DEFAULT
+)
+PARALLEL 1
+NOCACHE
+DISABLE ROW MOVEMENT
+;
+
+-- ----------------------------
+-- Records of CATEGORIA
+-- ----------------------------
+COMMIT;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for CHAT
+-- ----------------------------
+DROP TABLE "CHAT";
+CREATE TABLE "CHAT" (
+  "ID_EMPLEADO" NUMBER VISIBLE,
+  "ID_USUARIO" NUMBER VISIBLE,
+  "MENSAJE" VARCHAR2(100 BYTE) VISIBLE,
+  "FECHA" DATE VISIBLE
+)
+LOGGING
+NOCOMPRESS
+PCTFREE 10
+INITRANS 1
+STORAGE (
+  BUFFER_POOL DEFAULT
+)
+PARALLEL 1
+NOCACHE
+DISABLE ROW MOVEMENT
+;
+
+-- ----------------------------
+-- Records of CHAT
+-- ----------------------------
+COMMIT;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for DEPARTAMENTO
+-- ----------------------------
+DROP TABLE "DEPARTAMENTO";
+CREATE TABLE "DEPARTAMENTO" (
+  "ID_DEPARTAMENTO" NUMBER VISIBLE DEFAULT "DUMMY"."ID_DEPARTAMENTO"."NEXTVAL" NOT NULL,
+  "NOMBRE" VARCHAR2(100 BYTE) VISIBLE,
+  "CAPITAL_TOTAL" NUMBER VISIBLE
+)
+LOGGING
+NOCOMPRESS
+PCTFREE 10
+INITRANS 1
+STORAGE (
+  BUFFER_POOL DEFAULT
+)
+PARALLEL 1
+NOCACHE
+DISABLE ROW MOVEMENT
+;
+
+-- ----------------------------
+-- Records of DEPARTAMENTO
+-- ----------------------------
+COMMIT;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for DEPARTAMENTO_PUESTO
+-- ----------------------------
+DROP TABLE "DEPARTAMENTO_PUESTO";
+CREATE TABLE "DEPARTAMENTO_PUESTO" (
+  "ID_DEPARTAMENTO" NUMBER VISIBLE,
+  "ID_PUESTO" NUMBER VISIBLE
+)
+LOGGING
+NOCOMPRESS
+PCTFREE 10
+INITRANS 1
+STORAGE (
+  BUFFER_POOL DEFAULT
+)
+PARALLEL 1
+NOCACHE
+DISABLE ROW MOVEMENT
+;
+
+-- ----------------------------
+-- Records of DEPARTAMENTO_PUESTO
+-- ----------------------------
+COMMIT;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for DOCUMENTO
+-- ----------------------------
+DROP TABLE "DOCUMENTO";
+CREATE TABLE "DOCUMENTO" (
+  "ID_DOCUMENTO" NUMBER VISIBLE DEFAULT "DUMMY"."ID_DOCUMENTO"."NEXTVAL" NOT NULL,
+  "ID_USUARIO" NUMBER VISIBLE,
+  "ESTADO" VARCHAR2(100 BYTE) VISIBLE,
+  "MOTIVO" VARCHAR2(100 BYTE) VISIBLE,
+  "RECHAZOS" NUMBER VISIBLE,
+  "URL" VARCHAR2(100 BYTE) VISIBLE,
+  "EXTENSION" VARCHAR2(100 BYTE) VISIBLE
+)
+LOGGING
+NOCOMPRESS
+PCTFREE 10
+INITRANS 1
+STORAGE (
+  BUFFER_POOL DEFAULT
+)
+PARALLEL 1
+NOCACHE
+DISABLE ROW MOVEMENT
+;
+
+-- ----------------------------
+-- Records of DOCUMENTO
+-- ----------------------------
+COMMIT;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for EMPLEADO
+-- ----------------------------
+DROP TABLE "EMPLEADO";
+CREATE TABLE "EMPLEADO" (
+  "ID_EMPLEADO" NUMBER VISIBLE DEFAULT "DUMMY"."ID_EMPLEADO"."NEXTVAL" NOT NULL,
+  "USUARIO" VARCHAR2(100 BYTE) VISIBLE,
+  "CONTRASENA" VARCHAR2(100 BYTE) VISIBLE,
+  "FECHA_INICIO" DATE VISIBLE,
+  "FECHA_FIN" DATE VISIBLE,
+  "ESTADO" VARCHAR2(100 BYTE) VISIBLE,
+  "ID_ROL" NUMBER VISIBLE,
+  "ID_DEPARTAMENTO" NUMBER VISIBLE
+)
+LOGGING
+NOCOMPRESS
+PCTFREE 10
+INITRANS 1
+STORAGE (
+  BUFFER_POOL DEFAULT
+)
+PARALLEL 1
+NOCACHE
+DISABLE ROW MOVEMENT
+;
+
+-- ----------------------------
+-- Records of EMPLEADO
+-- ----------------------------
+COMMIT;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for FORMATO
+-- ----------------------------
+DROP TABLE "FORMATO";
+CREATE TABLE "FORMATO" (
+  "ID_FORMATO" NUMBER VISIBLE DEFAULT "DUMMY"."ID_FORMATO"."NEXTVAL" NOT NULL,
+  "NOMBRE" VARCHAR2(100 BYTE) VISIBLE
+)
+LOGGING
+NOCOMPRESS
+PCTFREE 10
+INITRANS 1
+STORAGE (
+  BUFFER_POOL DEFAULT
+)
+PARALLEL 1
+NOCACHE
+DISABLE ROW MOVEMENT
+;
+
+-- ----------------------------
+-- Records of FORMATO
+-- ----------------------------
+COMMIT;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for PRUEBA
+-- ----------------------------
+DROP TABLE "PRUEBA";
+CREATE TABLE "PRUEBA" (
+  "ID_PRUEBA" NUMBER VISIBLE DEFAULT "DUMMY"."ID_PRUEBA"."NEXTVAL" NOT NULL,
+  "NOMBRE" VARCHAR2(100 BYTE) VISIBLE,
+  "EDAD" NUMBER VISIBLE
+)
+LOGGING
+NOCOMPRESS
+PCTFREE 10
+INITRANS 1
+STORAGE (
+  INITIAL 65536 
+  NEXT 1048576 
+  MINEXTENTS 1
+  MAXEXTENTS 2147483645
+  BUFFER_POOL DEFAULT
+)
+PARALLEL 1
+NOCACHE
+DISABLE ROW MOVEMENT
+;
+
+-- ----------------------------
+-- Records of PRUEBA
+-- ----------------------------
+INSERT INTO "PRUEBA" VALUES ('11', 'christian', '16.5');
+INSERT INTO "PRUEBA" VALUES ('9', 'a', '13');
+INSERT INTO "PRUEBA" VALUES ('12', 'b', '19.6');
+INSERT INTO "PRUEBA" VALUES ('13', 'christian', '16.2');
+INSERT INTO "PRUEBA" VALUES ('10', 'a', '10');
+COMMIT;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for PUESTO
+-- ----------------------------
+DROP TABLE "PUESTO";
+CREATE TABLE "PUESTO" (
+  "ID_PUESTO" NUMBER VISIBLE DEFAULT "DUMMY"."ID_PUESTO"."NEXTVAL" NOT NULL,
+  "NOMBRE" VARCHAR2(100 BYTE) VISIBLE,
+  "SALARIO" NUMBER VISIBLE
+)
+LOGGING
+NOCOMPRESS
+PCTFREE 10
+INITRANS 1
+STORAGE (
+  BUFFER_POOL DEFAULT
+)
+PARALLEL 1
+NOCACHE
+DISABLE ROW MOVEMENT
+;
+
+-- ----------------------------
+-- Records of PUESTO
+-- ----------------------------
+COMMIT;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for PUESTO_CATEGORIA
+-- ----------------------------
+DROP TABLE "PUESTO_CATEGORIA";
+CREATE TABLE "PUESTO_CATEGORIA" (
+  "ID_PUESTO" NUMBER VISIBLE,
+  "ID_CATEGORIA" NUMBER VISIBLE
+)
+LOGGING
+NOCOMPRESS
+PCTFREE 10
+INITRANS 1
+STORAGE (
+  BUFFER_POOL DEFAULT
+)
+PARALLEL 1
+NOCACHE
+DISABLE ROW MOVEMENT
+;
+
+-- ----------------------------
+-- Records of PUESTO_CATEGORIA
+-- ----------------------------
+COMMIT;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for PUESTO_REQUISITO
+-- ----------------------------
+DROP TABLE "PUESTO_REQUISITO";
+CREATE TABLE "PUESTO_REQUISITO" (
+  "ID_PUESTO" NUMBER VISIBLE,
+  "ID_REQUISITO" NUMBER VISIBLE
+)
+LOGGING
+NOCOMPRESS
+PCTFREE 10
+INITRANS 1
+STORAGE (
+  BUFFER_POOL DEFAULT
+)
+PARALLEL 1
+NOCACHE
+DISABLE ROW MOVEMENT
+;
+
+-- ----------------------------
+-- Records of PUESTO_REQUISITO
+-- ----------------------------
+COMMIT;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for REQUISITO
+-- ----------------------------
+DROP TABLE "REQUISITO";
+CREATE TABLE "REQUISITO" (
+  "ID_REQUISITO" NUMBER VISIBLE DEFAULT "DUMMY"."ID_REQUISITO"."NEXTVAL" NOT NULL,
+  "NOMBRE" VARCHAR2(100 BYTE) VISIBLE,
+  "TAMANO" NUMBER VISIBLE,
+  "OBLIGATORIO" VARCHAR2(100 BYTE) VISIBLE
+)
+LOGGING
+NOCOMPRESS
+PCTFREE 10
+INITRANS 1
+STORAGE (
+  BUFFER_POOL DEFAULT
+)
+PARALLEL 1
+NOCACHE
+DISABLE ROW MOVEMENT
+;
+
+-- ----------------------------
+-- Records of REQUISITO
+-- ----------------------------
+COMMIT;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for REQUISITO_FORMATO
+-- ----------------------------
+DROP TABLE "REQUISITO_FORMATO";
+CREATE TABLE "REQUISITO_FORMATO" (
+  "ID_REQUISITO" NUMBER VISIBLE,
+  "ID_FORMATO" NUMBER VISIBLE
+)
+LOGGING
+NOCOMPRESS
+PCTFREE 10
+INITRANS 1
+STORAGE (
+  BUFFER_POOL DEFAULT
+)
+PARALLEL 1
+NOCACHE
+DISABLE ROW MOVEMENT
+;
+
+-- ----------------------------
+-- Records of REQUISITO_FORMATO
+-- ----------------------------
+COMMIT;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for ROL
+-- ----------------------------
+DROP TABLE "ROL";
+CREATE TABLE "ROL" (
+  "ID_ROL" NUMBER VISIBLE DEFAULT "DUMMY"."ID_ROL"."NEXTVAL" NOT NULL,
+  "NOMBRE" VARCHAR2(100 BYTE) VISIBLE
+)
+LOGGING
+NOCOMPRESS
+PCTFREE 10
+INITRANS 1
+STORAGE (
+  BUFFER_POOL DEFAULT
+)
+PARALLEL 1
+NOCACHE
+DISABLE ROW MOVEMENT
+;
+
+-- ----------------------------
+-- Records of ROL
+-- ----------------------------
+COMMIT;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for USUARIO
+-- ----------------------------
+DROP TABLE "USUARIO";
+CREATE TABLE "USUARIO" (
+  "ID_USUARIO" NUMBER VISIBLE DEFAULT "DUMMY"."ID_USUARIO"."NEXTVAL" NOT NULL,
+  "ID_ROL" NUMBER VISIBLE,
+  "PRIMER_LOG" VARCHAR2(100 BYTE) VISIBLE,
+  "DPI" VARCHAR2(100 BYTE) VISIBLE,
+  "NOMBRE" VARCHAR2(100 BYTE) VISIBLE,
+  "APELLIDO" VARCHAR2(100 BYTE) VISIBLE,
+  "CORREO" VARCHAR2(100 BYTE) VISIBLE,
+  "DIRECCION" VARCHAR2(100 BYTE) VISIBLE,
+  "TELEFONO" VARCHAR2(100 BYTE) VISIBLE,
+  "ID_EMPLEADO" NUMBER VISIBLE,
+  "CONTRASENA" VARCHAR2(100 BYTE) VISIBLE
+)
+LOGGING
+NOCOMPRESS
+PCTFREE 10
+INITRANS 1
+STORAGE (
+  BUFFER_POOL DEFAULT
+)
+PARALLEL 1
+NOCACHE
+DISABLE ROW MOVEMENT
+;
+
+-- ----------------------------
+-- Records of USUARIO
+-- ----------------------------
+COMMIT;
+COMMIT;
+
+-- ----------------------------
+-- Table structure for USUARIO_PUESTO
+-- ----------------------------
+DROP TABLE "USUARIO_PUESTO";
+CREATE TABLE "USUARIO_PUESTO" (
+  "ID_USUARIO" NUMBER VISIBLE,
+  "ID_PUESTO" NUMBER VISIBLE,
+  "CALIFICACION" NUMBER VISIBLE,
+  "ESTADO" VARCHAR2(100 BYTE) VISIBLE
+)
+LOGGING
+NOCOMPRESS
+PCTFREE 10
+INITRANS 1
+STORAGE (
+  BUFFER_POOL DEFAULT
+)
+PARALLEL 1
+NOCACHE
+DISABLE ROW MOVEMENT
+;
+
+-- ----------------------------
+-- Records of USUARIO_PUESTO
+-- ----------------------------
+COMMIT;
+COMMIT;
+
+-- ----------------------------
+-- Sequence structure for ID_CATEGORIA
+-- ----------------------------
+DROP SEQUENCE "ID_CATEGORIA";
+CREATE SEQUENCE "ID_CATEGORIA" MINVALUE 0 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 NOCACHE;
+
+-- ----------------------------
+-- Sequence structure for ID_DEPARTAMENTO
+-- ----------------------------
+DROP SEQUENCE "ID_DEPARTAMENTO";
+CREATE SEQUENCE "ID_DEPARTAMENTO" MINVALUE 0 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 NOCACHE;
+
+-- ----------------------------
+-- Sequence structure for ID_DOCUMENTO
+-- ----------------------------
+DROP SEQUENCE "ID_DOCUMENTO";
+CREATE SEQUENCE "ID_DOCUMENTO" MINVALUE 0 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 NOCACHE;
+
+-- ----------------------------
+-- Sequence structure for ID_EMPLEADO
+-- ----------------------------
+DROP SEQUENCE "ID_EMPLEADO";
+CREATE SEQUENCE "ID_EMPLEADO" MINVALUE 0 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 NOCACHE;
+
+-- ----------------------------
+-- Sequence structure for ID_FORMATO
+-- ----------------------------
+DROP SEQUENCE "ID_FORMATO";
+CREATE SEQUENCE "ID_FORMATO" MINVALUE 0 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 NOCACHE;
+
+-- ----------------------------
+-- Sequence structure for ID_PRUEBA
+-- ----------------------------
+DROP SEQUENCE "ID_PRUEBA";
+CREATE SEQUENCE "ID_PRUEBA" MINVALUE 0 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 NOCACHE;
+
+-- ----------------------------
+-- Sequence structure for ID_PUESTO
+-- ----------------------------
+DROP SEQUENCE "ID_PUESTO";
+CREATE SEQUENCE "ID_PUESTO" MINVALUE 0 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 NOCACHE;
+
+-- ----------------------------
+-- Sequence structure for ID_REQUISITO
+-- ----------------------------
+DROP SEQUENCE "ID_REQUISITO";
+CREATE SEQUENCE "ID_REQUISITO" MINVALUE 0 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 NOCACHE;
+
+-- ----------------------------
+-- Sequence structure for ID_ROL
+-- ----------------------------
+DROP SEQUENCE "ID_ROL";
+CREATE SEQUENCE "ID_ROL" MINVALUE 0 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 NOCACHE;
+
+-- ----------------------------
+-- Sequence structure for ID_USUARIO
+-- ----------------------------
+DROP SEQUENCE "ID_USUARIO";
+CREATE SEQUENCE "ID_USUARIO" MINVALUE 0 MAXVALUE 9999999999999999999999999999 INCREMENT BY 1 NOCACHE;
+
+-- ----------------------------
+-- Primary Key structure for table CATEGORIA
+-- ----------------------------
+ALTER TABLE "CATEGORIA" ADD CONSTRAINT "CATEGORIA_PK" PRIMARY KEY ("ID_CATEGORIA");
+
+-- ----------------------------
+-- Checks structure for table CATEGORIA
+-- ----------------------------
+ALTER TABLE "CATEGORIA" ADD CONSTRAINT "SYS_C007331" CHECK ("ID_CATEGORIA" IS NOT NULL) NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+
+-- ----------------------------
+-- Primary Key structure for table DEPARTAMENTO
+-- ----------------------------
+ALTER TABLE "DEPARTAMENTO" ADD CONSTRAINT "DEPARTAMENTO_PK" PRIMARY KEY ("ID_DEPARTAMENTO");
+
+-- ----------------------------
+-- Checks structure for table DEPARTAMENTO
+-- ----------------------------
+ALTER TABLE "DEPARTAMENTO" ADD CONSTRAINT "SYS_C007341" CHECK ("ID_DEPARTAMENTO" IS NOT NULL) NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+
+-- ----------------------------
+-- Primary Key structure for table DOCUMENTO
+-- ----------------------------
+ALTER TABLE "DOCUMENTO" ADD CONSTRAINT "DOCUMENTO_PK" PRIMARY KEY ("ID_DOCUMENTO");
+
+-- ----------------------------
+-- Checks structure for table DOCUMENTO
+-- ----------------------------
+ALTER TABLE "DOCUMENTO" ADD CONSTRAINT "SYS_C007358" CHECK ("ID_DOCUMENTO" IS NOT NULL) NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+
+-- ----------------------------
+-- Primary Key structure for table EMPLEADO
+-- ----------------------------
+ALTER TABLE "EMPLEADO" ADD CONSTRAINT "EMPLEADO_PK" PRIMARY KEY ("ID_EMPLEADO");
+
+-- ----------------------------
+-- Checks structure for table EMPLEADO
+-- ----------------------------
+ALTER TABLE "EMPLEADO" ADD CONSTRAINT "SYS_C007347" CHECK ("ID_EMPLEADO" IS NOT NULL) NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+
+-- ----------------------------
+-- Primary Key structure for table FORMATO
+-- ----------------------------
+ALTER TABLE "FORMATO" ADD CONSTRAINT "FORMATO_PK" PRIMARY KEY ("ID_FORMATO");
+
+-- ----------------------------
+-- Checks structure for table FORMATO
+-- ----------------------------
+ALTER TABLE "FORMATO" ADD CONSTRAINT "SYS_C007315" CHECK ("ID_FORMATO" IS NOT NULL) NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+
+-- ----------------------------
+-- Primary Key structure for table PRUEBA
+-- ----------------------------
+ALTER TABLE "PRUEBA" ADD CONSTRAINT "SYS_C007310" PRIMARY KEY ("ID_PRUEBA");
+
+-- ----------------------------
+-- Checks structure for table PRUEBA
+-- ----------------------------
+ALTER TABLE "PRUEBA" ADD CONSTRAINT "SYS_C007309" CHECK ("ID_PRUEBA" IS NOT NULL) NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+
+-- ----------------------------
+-- Primary Key structure for table PUESTO
+-- ----------------------------
+ALTER TABLE "PUESTO" ADD CONSTRAINT "PUESTO_PK" PRIMARY KEY ("ID_PUESTO");
+
+-- ----------------------------
+-- Checks structure for table PUESTO
+-- ----------------------------
+ALTER TABLE "PUESTO" ADD CONSTRAINT "SYS_C007333" CHECK ("ID_PUESTO" IS NOT NULL) NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+
+-- ----------------------------
+-- Primary Key structure for table REQUISITO
+-- ----------------------------
+ALTER TABLE "REQUISITO" ADD CONSTRAINT "REQUISITO_PK" PRIMARY KEY ("ID_REQUISITO");
+
+-- ----------------------------
+-- Checks structure for table REQUISITO
+-- ----------------------------
+ALTER TABLE "REQUISITO" ADD CONSTRAINT "SYS_C007316" CHECK ("ID_REQUISITO" IS NOT NULL) NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+
+-- ----------------------------
+-- Primary Key structure for table ROL
+-- ----------------------------
+ALTER TABLE "ROL" ADD CONSTRAINT "ROL_PK" PRIMARY KEY ("ID_ROL");
+
+-- ----------------------------
+-- Checks structure for table ROL
+-- ----------------------------
+ALTER TABLE "ROL" ADD CONSTRAINT "SYS_C007345" CHECK ("ID_ROL" IS NOT NULL) NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+
+-- ----------------------------
+-- Primary Key structure for table USUARIO
+-- ----------------------------
+ALTER TABLE "USUARIO" ADD CONSTRAINT "USUARIO_PK" PRIMARY KEY ("ID_USUARIO");
+
+-- ----------------------------
+-- Checks structure for table USUARIO
+-- ----------------------------
+ALTER TABLE "USUARIO" ADD CONSTRAINT "SYS_C007351" CHECK ("ID_USUARIO" IS NOT NULL) NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+
+-- ----------------------------
+-- Foreign Keys structure for table CHAT
+-- ----------------------------
+ALTER TABLE "CHAT" ADD CONSTRAINT "FK_EMPLEADO_CHAT" FOREIGN KEY ("ID_EMPLEADO") REFERENCES "EMPLEADO" ("ID_EMPLEADO") NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+ALTER TABLE "CHAT" ADD CONSTRAINT "FK_USUARIO_CHAT" FOREIGN KEY ("ID_USUARIO") REFERENCES "USUARIO" ("ID_USUARIO") NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+
+-- ----------------------------
+-- Foreign Keys structure for table DEPARTAMENTO_PUESTO
+-- ----------------------------
+ALTER TABLE "DEPARTAMENTO_PUESTO" ADD CONSTRAINT "FK_DEPARTAMENTO_DEPARTAMENTO_PUESTO" FOREIGN KEY ("ID_DEPARTAMENTO") REFERENCES "DEPARTAMENTO" ("ID_DEPARTAMENTO") NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+ALTER TABLE "DEPARTAMENTO_PUESTO" ADD CONSTRAINT "FK_PUESTO_DEPARTAMENTO_PUESTO" FOREIGN KEY ("ID_PUESTO") REFERENCES "PUESTO" ("ID_PUESTO") NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+
+-- ----------------------------
+-- Foreign Keys structure for table DOCUMENTO
+-- ----------------------------
+ALTER TABLE "DOCUMENTO" ADD CONSTRAINT "FK_USUARIO_DOCUMENTO" FOREIGN KEY ("ID_USUARIO") REFERENCES "USUARIO" ("ID_USUARIO") NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+
+-- ----------------------------
+-- Foreign Keys structure for table EMPLEADO
+-- ----------------------------
+ALTER TABLE "EMPLEADO" ADD CONSTRAINT "FK_DEPARTAMENTO" FOREIGN KEY ("ID_DEPARTAMENTO") REFERENCES "DEPARTAMENTO" ("ID_DEPARTAMENTO") NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+ALTER TABLE "EMPLEADO" ADD CONSTRAINT "FK_ROL" FOREIGN KEY ("ID_ROL") REFERENCES "ROL" ("ID_ROL") NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+
+-- ----------------------------
+-- Foreign Keys structure for table PUESTO_CATEGORIA
+-- ----------------------------
+ALTER TABLE "PUESTO_CATEGORIA" ADD CONSTRAINT "FK_CATEGORIA" FOREIGN KEY ("ID_CATEGORIA") REFERENCES "CATEGORIA" ("ID_CATEGORIA") NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+ALTER TABLE "PUESTO_CATEGORIA" ADD CONSTRAINT "FK_PUESTO" FOREIGN KEY ("ID_PUESTO") REFERENCES "PUESTO" ("ID_PUESTO") NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+
+-- ----------------------------
+-- Foreign Keys structure for table PUESTO_REQUISITO
+-- ----------------------------
+ALTER TABLE "PUESTO_REQUISITO" ADD CONSTRAINT "FK_PUESTO_puesto_requisito" FOREIGN KEY ("ID_PUESTO") REFERENCES "PUESTO" ("ID_PUESTO") NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+ALTER TABLE "PUESTO_REQUISITO" ADD CONSTRAINT "FK_REQUISITO_puesto_requisito" FOREIGN KEY ("ID_REQUISITO") REFERENCES "REQUISITO" ("ID_REQUISITO") NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+
+-- ----------------------------
+-- Foreign Keys structure for table REQUISITO_FORMATO
+-- ----------------------------
+ALTER TABLE "REQUISITO_FORMATO" ADD CONSTRAINT "FK_FORMATO" FOREIGN KEY ("ID_FORMATO") REFERENCES "FORMATO" ("ID_FORMATO") NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+ALTER TABLE "REQUISITO_FORMATO" ADD CONSTRAINT "FK_REQUISITO" FOREIGN KEY ("ID_REQUISITO") REFERENCES "REQUISITO" ("ID_REQUISITO") NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+
+-- ----------------------------
+-- Foreign Keys structure for table USUARIO
+-- ----------------------------
+ALTER TABLE "USUARIO" ADD CONSTRAINT "FK_EMPLEADO" FOREIGN KEY ("ID_EMPLEADO") REFERENCES "EMPLEADO" ("ID_EMPLEADO") NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+
+-- ----------------------------
+-- Foreign Keys structure for table USUARIO_PUESTO
+-- ----------------------------
+ALTER TABLE "USUARIO_PUESTO" ADD CONSTRAINT "FK_PUESTO_USUARIO_PUESTO" FOREIGN KEY ("ID_PUESTO") REFERENCES "PUESTO" ("ID_PUESTO") NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
+ALTER TABLE "USUARIO_PUESTO" ADD CONSTRAINT "FK_USUARIO" FOREIGN KEY ("ID_USUARIO") REFERENCES "USUARIO" ("ID_USUARIO") NOT DEFERRABLE INITIALLY IMMEDIATE NORELY VALIDATE;
