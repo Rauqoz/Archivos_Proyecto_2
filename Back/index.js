@@ -17,9 +17,19 @@ const port = 5300;
 //variables internas
 var usuario_actual = {user: 'Rau', rol:'admin',name:'Rau'};
 //var usuario_actual ;
+var departamentos = ['1','2','3','4','5 '];
 
 app.get('/usuario_actual', (req,res)=>{
     res.send(usuario_actual)
+})
+
+app.get('/limpiar_usuario_actual', (req,res)=>{
+  usuario_actual = undefined;
+  res.send(usuario_actual)
+})
+
+app.get('/departamentos', (req,res)=>{
+  res.send(departamentos)
 })
 
 

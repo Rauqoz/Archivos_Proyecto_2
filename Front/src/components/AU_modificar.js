@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react'
 
-const P1 = ({numbesr}) => {
+const AU_modificar = () => {
     return (
         <Fragment>
-            P1
+            modificar usuarios
         </Fragment>
     )
 }
 
-export default P1
+export default AU_modificar

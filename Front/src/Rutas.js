@@ -8,16 +8,15 @@ import Home from './components/Home'
 import Login from './components/Login'
 import Access from './components/Access'
 
-
 const Rutas = props => {
     return (
         <Router>
             <Switch>
-                <Route exact path='/' component={()=> <Home/>}/>
+                <Route exact path='/' component={Home}/>
 
-                <Route path='/login' component={()=> <Login/>}/>
+                <Route path='/login' component={Login}/>
 
-                <Route path='/access' component={()=> <Access/>}/>
+                <Route path='/access' component={Access}/>
 
             </Switch>
         </Router>

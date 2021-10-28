@@ -17,6 +17,10 @@ const Barra = () => {
         .catch(error => console.log('error', error));
     }, [])
 
+    const salir_logoff = ()=>{
+        console.log("log off");
+    }
+
     if(usuario_actual !== undefined){
         switch (usuario_actual.rol) {
             case 'admin':
@@ -27,8 +31,7 @@ const Barra = () => {
                             <Navbar.Brand>Admnistrador</Navbar.Brand>
                             <Nav className="me-auto">
                             <Nav.Link href="/access/carga_masiva">Carga Masiva</Nav.Link>
-                            <Nav.Link href="#">Administracion de Usuarios</Nav.Link>
-                            <Nav.Link href="#">Administracion de Planilla</Nav.Link>
+                            <Nav.Link href="/access/admin_usuarios">Administracion de Usuarios</Nav.Link>
                             <Nav.Link href="#">Reportes</Nav.Link>
                             </Nav>
                             <Navbar.Collapse className="justify-content-end">
@@ -36,7 +39,7 @@ const Barra = () => {
                                 logeado como: {usuario_actual.name} {usuario_actual.user}
                             </Navbar.Text>
                             <Nav className="me-auto">
-                            <Nav.Link href="#">Log Off</Nav.Link>
+                            <Nav.Link onClick={salir_logoff} href="/login">Log Off</Nav.Link>
                             </Nav>
                             </Navbar.Collapse>
                         </Container>
@@ -58,7 +61,7 @@ const Barra = () => {
                                     logeado como: {usuario_actual.name} {usuario_actual.user}
                                 </Navbar.Text>
                                 <Nav className="me-auto">
-                                <Nav.Link href="#">Log Off</Nav.Link>
+                                <Nav.Link href="/login">Log Off</Nav.Link>
                                 </Nav>
                                 </Navbar.Collapse>
                             </Container>
@@ -81,13 +84,34 @@ const Barra = () => {
                                         logeado como: {usuario_actual.name} {usuario_actual.user}
                                     </Navbar.Text>
                                     <Nav className="me-auto">
-                                    <Nav.Link href="#">Log Off</Nav.Link>
+                                    <Nav.Link href="/login">Log Off</Nav.Link>
                                     </Nav>
                                     </Navbar.Collapse>
                                 </Container>
                                 </Navbar>
                             </Fragment>
                         );
+                        case 'coordinador':
+                            return (
+                                <Fragment>
+                                    <Navbar bg="dark" variant="dark">
+                                    <Container>
+                                        <Navbar.Brand>Coordinador</Navbar.Brand>
+                                        <Nav className="me-auto">
+                                        <Nav.Link href="/access/administracion_planilla">Administracion de Planilla</Nav.Link>
+                                        </Nav>
+                                        <Navbar.Collapse className="justify-content-end">
+                                        <Navbar.Text>
+                                            logeado como: {usuario_actual.name} {usuario_actual.user}
+                                        </Navbar.Text>
+                                        <Nav className="me-auto">
+                                        <Nav.Link onClick={salir_logoff} href="/login">Log Off</Nav.Link>
+                                        </Nav>
+                                        </Navbar.Collapse>
+                                    </Container>
+                                    </Navbar>
+                                </Fragment>
+                            );
         
             default:
                 break;
