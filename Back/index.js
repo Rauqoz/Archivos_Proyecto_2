@@ -18,6 +18,8 @@ const port = 5300;
 var usuario_actual = {user: 'Rau', rol:'admin',name:'Rau'};
 //var usuario_actual ;
 var departamentos = ['1','2','3','4','5 '];
+var empleados = [ {usuario:'rau', contrasena:'123', fecha_inicio:'30/12/2021', fecha_fin: '', estado:'activo', rol:'admin', dep:'RRHH'}]
+
 
 app.get('/usuario_actual', (req,res)=>{
     res.send(usuario_actual)
@@ -30,6 +32,10 @@ app.get('/limpiar_usuario_actual', (req,res)=>{
 
 app.get('/departamentos', (req,res)=>{
   res.send(departamentos)
+})
+
+app.get('/empleados', (req,res)=>{
+  res.send(empleados)
 })
 
 

@@ -1,10 +1,10 @@
-import React, { Fragment, useRef } from 'react'
+import React, { Fragment , useRef } from 'react'
 import { Form ,Button  } from 'react-bootstrap';
 
 const Carga_Masiva = () => {
     const ruta_archivo = useRef()
     const archivo_cargado = useRef()
-
+    
 
     return (
         <Fragment>
@@ -28,6 +28,7 @@ const Carga_Masiva = () => {
             </Form>
         </Fragment>
     )
+    
 }
 
 export default Carga_Masiva

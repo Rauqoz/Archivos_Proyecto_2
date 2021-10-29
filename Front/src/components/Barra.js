@@ -18,6 +18,16 @@ const Barra = () => {
     }, [])
 
     const salir_logoff = ()=>{
+        var formdata = new FormData();
+        var requestOptions = {
+        method: 'GET',
+        data: formdata,
+        redirect: 'follow'
+        };
+        fetch("http://localhost:5300/limpiar_usuario_actual", requestOptions)
+        .then(response => response.json())
+        .then(result => setUsuario_actual(result))
+        .catch(error => console.log('error', error));
         console.log("log off");
     }
 
@@ -61,7 +71,7 @@ const Barra = () => {
                                     logeado como: {usuario_actual.name} {usuario_actual.user}
                                 </Navbar.Text>
                                 <Nav className="me-auto">
-                                <Nav.Link href="/login">Log Off</Nav.Link>
+                                <Nav.Link onClick={salir_logoff}  href="/login">Log Off</Nav.Link>
                                 </Nav>
                                 </Navbar.Collapse>
                             </Container>
@@ -84,7 +94,7 @@ const Barra = () => {
                                         logeado como: {usuario_actual.name} {usuario_actual.user}
                                     </Navbar.Text>
                                     <Nav className="me-auto">
-                                    <Nav.Link href="/login">Log Off</Nav.Link>
+                                    <Nav.Link onClick={salir_logoff}  href="/login">Log Off</Nav.Link>
                                     </Nav>
                                     </Navbar.Collapse>
                                 </Container>
