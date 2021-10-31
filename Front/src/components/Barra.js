@@ -63,8 +63,8 @@ const Barra = () => {
                             <Container>
                                 <Navbar.Brand>Reclutador</Navbar.Brand>
                                 <Nav className="me-auto">
-                                <Nav.Link href="#">Aceptar o Rechazar Aplicantes</Nav.Link>
-                                <Nav.Link href="#">Revision de Expedientes</Nav.Link>
+                                <Nav.Link href="/access/aceptar_aplicantes">Aceptar o Rechazar Aplicantes</Nav.Link>
+                                <Nav.Link href="/access/revision_expedientes">Revision de Expedientes</Nav.Link>
                                 </Nav>
                                 <Navbar.Collapse className="justify-content-end">
                                 <Navbar.Text>
