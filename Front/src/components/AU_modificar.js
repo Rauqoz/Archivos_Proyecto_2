@@ -9,12 +9,10 @@ import {
     FormGroup,
     ModalFooter,
   } from "reactstrap";
+import { Form } from 'react-bootstrap';
 
 const AU_modificar = () => {
-    const datos = [
-        {id:0, usuario:'rau', contrasena:'123', fecha_inicio:'30/12/2021', fecha_fin: '', estado:'activo', rol:'admin', dep:'RRHH'}
-      ];
-
+    const [data, setData] = useState([])
     const [departamentos, setDepartamentos] = useState([])
     const roles = ['admin','reclutador','coordinador']
 
@@ -29,9 +27,13 @@ const AU_modificar = () => {
         .then(response => response.json())
         .then(result => setDepartamentos(result))
         .catch(error => console.log('error', error));
+
+        fetch("http://localhost:5300/empleados", requestOptions)
+        .then(response => response.json())
+        .then(result => setData(result))
+        .catch(error => console.log('error', error));
     }, [])
 
-      const [data, setData] = useState(datos)
       const [modalActualizar, setModalActualizar] = useState(false)
       const [modalInsertar, setModalInsertar] = useState(false)
       const [modalEliminar, setModalEliminar] = useState(false)
@@ -74,7 +76,6 @@ const AU_modificar = () => {
       };
     
       const eliminar = (dato) => {
-        console.log(dato);
         var opcion = window.confirm("Estás Seguro que deseas Eliminar a "+dato.usuario);
         if (opcion === true) {
             var arreglo = data;
@@ -242,34 +243,28 @@ const AU_modificar = () => {
               <label>
                 Rol: 
               </label>
-              <select name="rol" onChange={handleChange}>
+              <Form.Select name="rol" onChange={handleChange}>
               {
                 roles.map((e, i) => {
-                    if(e === form.rol){
-                    return (<option selected={true} key={i} value={e}>{e}</option>)
-                    }else{
-                    return (<option key={i} value={e}>{e}</option>)
-                    }
+                  return (<option key={i} value={e}>{e}</option>)
+                    
                 })
                 }
-              </select>
+              </Form.Select>
             </FormGroup>
 
             <FormGroup>
               <label>
                 Departamento: 
               </label>
-              <select name="dep" onChange={handleChange}>
+              <Form.Select name="dep" onChange={handleChange}>
               {
                 departamentos.map((e, i) => {
-                    if(e === form.dep){
-                    return (<option selected={true} key={i} value={e}>{e}</option>)
-                    }else{
-                    return (<option key={i} value={e}>{e}</option>)
-                    }
+                  return (<option key={i} value={e}>{e}</option>)
+                    
                 })
                 }
-              </select>
+              </Form.Select>
             </FormGroup>
             
           </ModalBody>
@@ -325,26 +320,26 @@ const AU_modificar = () => {
               <label>
                 Rol: 
               </label>
-              <select name="rol" onChange={handleChange}>
+              <Form.Select name="rol" onChange={handleChange}>
               {
                 roles.map((e, i) => {
-                    return (<option selected={true} key={i} value={e}>{e}</option>)
+                    return (<option key={i} value={e}>{e}</option>)
                 })
                 }
-              </select>
+              </Form.Select>
             </FormGroup>
 
             <FormGroup>
               <label>
                 Departamento: 
               </label>
-              <select name="dep" onChange={handleChange}>
+              <Form.Select name="dep" onChange={handleChange}>
               {
                 departamentos.map((e, i) => {
-                    return (<option selected={true} key={i} value={e}>{e}</option>)
+                    return (<option key={i} value={e}>{e}</option>)
                 })
                 }
-              </select>
+              </Form.Select>
             </FormGroup>
           </ModalBody>
 

@@ -37,6 +37,10 @@ const RE_expediente = () => {
             {
                 label: 'Rechazar Doc',
                 field: 'rechazar',
+            },
+            {
+                label: 'Descargar Doc',
+                field: 'descargar',
             }
             ]
         var formdata = new FormData();
@@ -61,6 +65,8 @@ const RE_expediente = () => {
                 Aceptar
               </Button>, rechazar:<Button color="danger" onClick={()=>{ doc_rechazado(e)} }>
                     Rechazar
+                  </Button>, descargar:<Button color="primary" onClick={()=>{ doc_descargar(e)} }>
+                    Descargar
                   </Button>}
                 }else{
                     return false
@@ -77,6 +83,10 @@ const RE_expediente = () => {
     }
     const doc_rechazado = (dato)=>{
         console.log('el vato',dato.nombre, 'fue rechazado');
+    }
+
+    const doc_descargar = (dato)=>{
+        console.log('descargar doc de', dato.nombre,'en',dato.url);
     }
 
     return (

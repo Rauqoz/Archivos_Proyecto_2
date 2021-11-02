@@ -9,6 +9,7 @@ import Carga_Masiva from './Carga_Masiva'
 import Admin_Usuarios from './Admin_Usuarios';
 import RE_aceptar from './RE_aceptar';
 import RE_expediente from './RE_expediente';
+import CO_planilla from './CO_planilla';
 
 const Acceso = () => {
 
@@ -21,6 +22,7 @@ const Acceso = () => {
                     <Route path='/access/admin_usuarios' component={Admin_Usuarios}/>
                     <Route path='/access/aceptar_aplicantes' component={RE_aceptar}/>
                     <Route path='/access/revision_expedientes' component={RE_expediente}/>
+                    <Route path='/access/admin_planilla' component={CO_planilla}/>
                 </Switch>
             </Router>
         </Fragment>

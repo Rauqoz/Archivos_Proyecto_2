@@ -7,6 +7,7 @@ import {
 import Home from './components/Home'
 import Login from './components/Login'
 import Access from './components/Access'
+import Aplicacion from './components/Aplicacion'
 
 const Rutas = props => {
     return (
@@ -17,6 +18,8 @@ const Rutas = props => {
                 <Route path='/login' component={Login}/>
 
                 <Route path='/access' component={Access}/>
+
+                <Route path='/aplicacion' component={Aplicacion}/>
 
             </Switch>
         </Router>

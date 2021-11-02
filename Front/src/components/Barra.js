@@ -38,7 +38,7 @@ const Barra = () => {
                     <Fragment>
                         <Navbar bg="dark" variant="dark">
                         <Container>
-                            <Navbar.Brand>Admnistrador</Navbar.Brand>
+                            <Navbar.Brand href='/access '>Admnistrador</Navbar.Brand>
                             <Nav className="me-auto">
                             <Nav.Link href="/access/carga_masiva">Carga Masiva</Nav.Link>
                             <Nav.Link href="/access/admin_usuarios">Administracion de Usuarios</Nav.Link>
@@ -46,7 +46,7 @@ const Barra = () => {
                             </Nav>
                             <Navbar.Collapse className="justify-content-end">
                             <Navbar.Text>
-                                logeado como: {usuario_actual.name} {usuario_actual.user}
+                                logeado como: {usuario_actual.name} {usuario_actual.id}
                             </Navbar.Text>
                             <Nav className="me-auto">
                             <Nav.Link onClick={salir_logoff} href="/login">Log Off</Nav.Link>
@@ -61,14 +61,14 @@ const Barra = () => {
                         <Fragment>
                             <Navbar bg="dark" variant="dark">
                             <Container>
-                                <Navbar.Brand>Reclutador</Navbar.Brand>
+                                <Navbar.Brand href='/access '>Reclutador</Navbar.Brand>
                                 <Nav className="me-auto">
                                 <Nav.Link href="/access/aceptar_aplicantes">Aceptar o Rechazar Aplicantes</Nav.Link>
                                 <Nav.Link href="/access/revision_expedientes">Revision de Expedientes</Nav.Link>
                                 </Nav>
                                 <Navbar.Collapse className="justify-content-end">
                                 <Navbar.Text>
-                                    logeado como: {usuario_actual.name} {usuario_actual.user}
+                                    logeado como: {usuario_actual.name} {usuario_actual.id}
                                 </Navbar.Text>
                                 <Nav className="me-auto">
                                 <Nav.Link onClick={salir_logoff}  href="/login">Log Off</Nav.Link>
@@ -83,7 +83,7 @@ const Barra = () => {
                             <Fragment>
                                 <Navbar bg="dark" variant="dark">
                                 <Container>
-                                    <Navbar.Brand>Aplicante</Navbar.Brand>
+                                    <Navbar.Brand href='/access '>Aplicante</Navbar.Brand>
                                     <Nav className="me-auto">
                                     <Nav.Link href="/">Home</Nav.Link>
                                     <Nav.Link href="#">Revision de Expediente</Nav.Link>
@@ -91,7 +91,7 @@ const Barra = () => {
                                     </Nav>
                                     <Navbar.Collapse className="justify-content-end">
                                     <Navbar.Text>
-                                        logeado como: {usuario_actual.name} {usuario_actual.user}
+                                        logeado como: {usuario_actual.name} {usuario_actual.id}
                                     </Navbar.Text>
                                     <Nav className="me-auto">
                                     <Nav.Link onClick={salir_logoff}  href="/login">Log Off</Nav.Link>
@@ -106,13 +106,13 @@ const Barra = () => {
                                 <Fragment>
                                     <Navbar bg="dark" variant="dark">
                                     <Container>
-                                        <Navbar.Brand>Coordinador</Navbar.Brand>
+                                        <Navbar.Brand href='/access '>Coordinador</Navbar.Brand>
                                         <Nav className="me-auto">
-                                        <Nav.Link href="/access/administracion_planilla">Administracion de Planilla</Nav.Link>
+                                        <Nav.Link href="/access/admin_planilla">Administracion de Planilla</Nav.Link>
                                         </Nav>
                                         <Navbar.Collapse className="justify-content-end">
                                         <Navbar.Text>
-                                            logeado como: {usuario_actual.name} {usuario_actual.user}
+                                            logeado como: {usuario_actual.name} {usuario_actual.id}
                                         </Navbar.Text>
                                         <Nav className="me-auto">
                                         <Nav.Link onClick={salir_logoff} href="/login">Log Off</Nav.Link>
@@ -122,7 +122,7 @@ const Barra = () => {
                                     </Navbar>
                                 </Fragment>
                             );
-        
+            
             default:
                 break;
         }
@@ -131,7 +131,7 @@ const Barra = () => {
             <Fragment>
                 <Navbar bg="dark" variant="dark">
                 <Container>
-                    <Navbar.Brand>Guest</Navbar.Brand>
+                    <Navbar.Brand href='/access '>Guest</Navbar.Brand>
                     <Nav className="me-auto">
                     <Nav.Link href="/">Home</Nav.Link>
                     </Nav>
@@ -145,9 +145,6 @@ const Barra = () => {
             </Fragment>
         )
     }
-    
-
-    
 }
 
 export default Barra

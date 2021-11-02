@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState  } from 'react'
 import { MDBDataTableV5 } from 'mdbreact';
 
 const AU_ver = () => {
-    const [datatable,setDatatable] = useState({});
+    const [datatable,setDatatable] = useState();
 
     useEffect(() => {
         const columns = [
