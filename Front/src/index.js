@@ -6,9 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Rutas/>
-  </React.StrictMode>,
+    <Rutas/>,
   document.getElementById('root')
 );
 
