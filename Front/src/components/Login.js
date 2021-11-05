@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { Form ,Button  } from 'react-bootstrap';
+import { Form , Button  } from 'react-bootstrap';
 import Barra from './Barra';
 
 const Login = () => {

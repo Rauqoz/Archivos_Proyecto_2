@@ -88,6 +88,149 @@ app.post('/c_puesto_formulario', (req,res)=>{
   res.status(200)
 })
 
+var c_deps = 0,c_pues = 0,c_cate=0,c_requi=0,c_forma=0;
+
+
+app.post('/c_carga_masiva',(req,res)=>{
+  const data = req.body.carga
+  const array_prueba = [];
+  console.log(data);
+  console.log("------");
+  c_departamentos(data)
+  console.log('departamentos',c_deps);
+  console.log('puestos',c_pues);
+  console.log('categorias',c_cate);
+  console.log('requisitos',c_requi);
+  console.log('formatos',c_forma);
+  res.send({data:data})
+})
+
+const c_departamentos =(hijo)=>{
+  if(Array.isArray(hijo)){
+    hijo.forEach(e=>{
+      if(e.nombre){
+        c_deps+=1
+        console.log('**departamento**');
+        console.log('capital dep:',e.capital_total[0]);
+        console.log('nombre dep:',e.nombre[0]);
+        if(e.departamentos){
+          c_departamentos(e.departamentos)
+        }
+        if(e.puestos){
+          c_puestos(e.puestos)
+        }
+      }else{
+        c_departamentos(e)
+      }
+    })
+  }else{
+    if(hijo.departamento){
+      c_departamentos(hijo.departamento)
+    }else{
+      c_departamentos(hijo.departamentos)
+    }
+  }
+}
+
+const c_puestos =(hijo)=>{
+  if(Array.isArray(hijo)){
+    hijo.forEach(e=>{
+      if(e.nombre){
+        c_pues+=1
+        console.log('**puesto**');
+        console.log('capital pues:',e.salario[0]);
+        console.log('nombre pues:',e.nombre[0]);
+        if(e.puestos){
+          c_puestos(e.puestos)
+        }
+        if(e.categorias){
+          c_categorias(e.categorias)
+        }
+        if(e.requisitos){
+          c_requisitos(e.requisitos)
+        }
+        
+      }else{
+        c_puestos(e)
+      }
+    })
+  }else{
+    if(hijo.puesto){
+      c_puestos(hijo.puesto)
+    }else{
+      c_puestos(hijo.puestos)
+    }
+  }
+
+}
+
+const c_categorias =(hijo)=>{
+  if(Array.isArray(hijo)){
+    hijo.forEach(e=>{
+      if(e.nombre){
+        c_cate+=1
+        console.log('**categoria**');
+        console.log('nombre pues:',e.nombre[0]);
+        if(e.categorias){
+          c_categorias(e.categorias)
+        }
+      }else{
+        c_categorias(e)
+      }
+    })
+  }else{
+    if(hijo.categoria){
+      c_categorias(hijo.categoria)
+    }else{
+      c_categorias(hijo.categorias)
+    }
+  }
+}
+
+const c_requisitos =(hijo)=>{
+  if(Array.isArray(hijo)){
+    hijo.forEach(e=>{
+      if(e.nombre){
+        c_requi+=1
+        console.log('**requisito**');
+        console.log('nombre pues:',e.nombre[0]);
+        console.log('obligatorio pues:',e.obligatorio[0]);
+        if(e.formatos){
+          c_formatos(e.formatos)
+        }
+      }else{
+        c_requisitos(e.requisito)
+      }
+    })
+  }else{
+    if(hijo.requisito){
+      c_requisitos(hijo.requisito)
+    }else{
+      c_requisitos(hijo.requisitos)
+    }
+  }
+}
+
+const c_formatos =(hijo)=>{
+  if(Array.isArray(hijo)){
+    hijo.forEach(e=>{
+      if(e.nombre){
+        c_forma+=1
+        console.log('**formato**');
+        console.log('nombre pues:',e.nombre[0]);
+      }else{
+        c_formatos(e.formato)
+      }
+    })
+  }else{
+    if(hijo.requisito){
+      c_formatos(hijo.requisito)
+    }else{
+      c_formatos(hijo.requisitos)
+    }
+  }
+}
+
 app.get('/con', (req,res)=>{
   let datos;
   const conexion =  async()=> {
