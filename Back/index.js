@@ -91,6 +91,7 @@ app.post('/c_puesto_formulario', (req,res)=>{
 })
 
 var a_deps = [], a_pues = [], a_cate = [],a_requi = [], a_forma = [];
+var a_pues_deps = [], a_cate_pues = [], a_requi_pues = [], a_forma_requi = [];
 
 app.post('/c_carga_masiva',(req,res)=>{
   const data = req.body.carga
@@ -143,30 +144,22 @@ const recorridos_carga_masiva = ()=>{
 }
 
 const recorridos_carga_masiva_2 = ()=>{
-  a_pues.forEach(pue=>{
-    pue.padre.forEach(dep=>{
-      query_solo_insertar(`INSERT INTO DEPARTAMENTO_PUESTO VALUES ((SELECT ID_DEPARTAMENTO FROM DEPARTAMENTO d WHERE d.nombre = '${dep.nombre[0]}'), (SELECT ID_PUESTO FROM PUESTO p WHERE p.nombre = '${pue.nombre[0]}'))`)
-    })
+
+  a_pues_deps.forEach(pue=>{
+    query_solo_insertar(`INSERT INTO DEPARTAMENTO_PUESTO VALUES ((SELECT ID_DEPARTAMENTO FROM DEPARTAMENTO d WHERE d.nombre = '${pue.padre[0]}'), (SELECT ID_PUESTO FROM PUESTO p WHERE p.nombre = '${pue.nombre[0]}'))`)
   })
 
-  a_cate.forEach(cate=>{
-    cate.padre.forEach(pue=>{
-      query_solo_insertar(`INSERT INTO PUESTO_CATEGORIA VALUES ((SELECT ID_PUESTO FROM PUESTO p WHERE p.NOMBRE = '${pue.nombre[0]}'),(SELECT ID_CATEGORIA FROM CATEGORIA c WHERE c.NOMBRE = '${cate.nombre[0]}'))`)
-    })
+  a_cate_pues.forEach(cate=>{
+    query_solo_insertar(`INSERT INTO PUESTO_CATEGORIA VALUES ((SELECT ID_PUESTO FROM PUESTO p WHERE p.NOMBRE = '${cate.padre[0]}'),(SELECT ID_CATEGORIA FROM CATEGORIA c WHERE c.NOMBRE = '${cate.nombre[0]}'))`)
   })
 
-  a_requi.forEach(requi=>{
-    requi.padre.forEach(pue=>{
-      query_solo_insertar(`INSERT INTO PUESTO_REQUISITO VALUES ((SELECT ID_PUESTO FROM PUESTO p WHERE p.NOMBRE = '${pue.nombre[0]}'),(SELECT ID_REQUISITO FROM REQUISITO r WHERE r.NOMBRE = '${requi.nombre[0]}'))`)
-    })
+  a_requi_pues.forEach(requi=>{
+    query_solo_insertar(`INSERT INTO PUESTO_REQUISITO VALUES ((SELECT ID_PUESTO FROM PUESTO p WHERE p.NOMBRE = '${requi.padre[0]}'),(SELECT ID_REQUISITO FROM REQUISITO r WHERE r.NOMBRE = '${requi.nombre[0]}'))`)
   })
 
-  a_forma.forEach(forma=>{
-    forma.padre.forEach(requi=>{
-      query_solo_insertar(`INSERT INTO REQUISITO_FORMATO VALUES ((SELECT ID_REQUISITO FROM REQUISITO r2 WHERE r2.NOMBRE = '${requi.nombre[0]}'),(SELECT ID_FORMATO FROM FORMATO f WHERE f.NOMBRE = '${forma.nombre[0]}'))`)
-    })
+  a_forma_requi.forEach(forma=>{
+    query_solo_insertar(`INSERT INTO REQUISITO_FORMATO VALUES ((SELECT ID_REQUISITO FROM REQUISITO r2 WHERE r2.NOMBRE = '${forma.padre[0]}'),(SELECT ID_FORMATO FROM FORMATO f WHERE f.NOMBRE = '${forma.nombre[0]}'))`)
   })
-
 }
 
 const c_departamentos = (hijo,padre)=>{
@@ -183,20 +176,20 @@ const c_departamentos = (hijo,padre)=>{
         }
 
         if(e.departamentos){
-          c_departamentos(e.departamentos,hijo)
+          c_departamentos(e.departamentos,padre)
         }
         if(e.puestos){
-          c_puestos(e.puestos,hijo)
+          c_puestos(e.puestos,e)
         }
       }else{
-        c_departamentos(e,hijo)
+        c_departamentos(e,padre)
       }
     })
   }else{
     if(hijo.departamento){
-      c_departamentos(hijo.departamento,hijo)
+      c_departamentos(hijo.departamento,padre)
     }else{
-      c_departamentos(hijo.departamentos,hijo)
+      c_departamentos(hijo.departamentos,padre)
     }
   }
 }
@@ -211,17 +204,18 @@ const c_puestos =(hijo,padre)=>{
         //console.log('nombre pues:',e.nombre[0]);
         let tempo = a_pues.find(el => el.nombre == nombre)
         if(tempo === undefined){
-          a_pues.push({...e,padre:padre})
+          a_pues.push(e)
         }
+        a_pues_deps.push({...e,padre:padre.nombre})
 
         if(e.puestos){
           c_puestos(e.puestos,padre)
         }
         if(e.categorias){
-          c_categorias(e.categorias,hijo)
+          c_categorias(e.categorias,e)
         }
         if(e.requisitos){
-          c_requisitos(e.requisitos,hijo)
+          c_requisitos(e.requisitos,e)
         }
         
       }else{
@@ -246,8 +240,9 @@ const c_categorias = (hijo,padre)=>{
         //console.log('nombre pues:',e.nombre[0]);
         let tempo = a_cate.find(el => el.nombre == nombre)
         if(tempo === undefined){
-          a_cate.push({...e,padre:padre})
+          a_cate.push(e)
         }
+        a_cate_pues.push({...e,padre:padre.nombre})
 
         if(e.categorias){
           c_categorias(e.categorias,padre)
@@ -277,11 +272,21 @@ const c_requisitos =(hijo,padre)=>{
         //console.log('obligatorio pues:',e.obligatorio[0]);
         let tempo = a_requi.find(el => el.nombre == nombre)
         if(tempo === undefined){
-          a_requi.push({...e,padre:padre})
+          a_requi.push(e)
+        }
+
+        let pre = {...e,padre:padre.nombre}
+        let tempo2 = a_requi_pues.find(el => {
+          if(el.nombre[0] == pre.nombre[0] && el.padre[0] == pre.padre[0]){
+            return true
+          }
+        })
+        if(tempo2 === undefined){
+          a_requi_pues.push({...e,padre:padre.nombre})
         }
 
         if(e.formatos){
-          c_formatos(e.formatos,hijo)
+          c_formatos(e.formatos,e)
         }
       }else{
         c_requisitos(e.requisito,padre)
@@ -304,7 +309,16 @@ const c_formatos =(hijo,padre)=>{
         //console.log('nombre pues:',e.nombre[0]);
         let tempo = a_forma.find(el => el.nombre == nombre)
         if(tempo === undefined){
-          a_forma.push({...e,padre:padre})
+          a_forma.push(e)
+        }
+        let pre = {...e,padre:padre.nombre}
+        let tempo2 = a_forma_requi.find(el => {
+          if(el.nombre[0] == pre.nombre[0] && el.padre[0] == pre.padre[0]){
+            return true
+          }
+        })
+        if(tempo2 === undefined){
+          a_forma_requi.push({...e,padre:padre.nombre})
         }
 
       }else{
