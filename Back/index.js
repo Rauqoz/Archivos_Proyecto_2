@@ -22,7 +22,7 @@ const port = 5300;
 //admin reclutador coordinador aplicante
 var usuario_actual = {id: '0', rol:'admin',name:'Rau', dep:'0'};
 //var usuario_actual;
-var departamentos = ['1','2','3','4','5 '];
+var departamentos = [];
 //activo inactivo
 var empleados = [ {id:0, usuario:'rau', contrasena:'123', fecha_inicio:'30/12/2021', fecha_fin: '', estado:'activo', rol:'admin', dep:'RRHH'}];
 //contratado despedido rechazado aceptado pendiente calificador
@@ -30,7 +30,7 @@ var aplicantes = [ {id:0,dpi:0,nombre:'rau',apellido:'rau',puesto:'puesto', sala
 //aceptado rechazado pendiente
 var documentos = [ {id:0,id_usuario:0,estado:'pendiente',motivo:'0',rechazados:0,url:'0',extension:'0',nombre :'0' },{id:0,id_usuario:0,estado:'pendiente',motivo:'1',rechazados:0,url:'0',extension:'0',nombre :'1' },{id:0,id_usuario:0,estado:'pendiente',motivo:'2',rechazados:0,url:'0',extension:'0',nombre :'2' }];
 
-var puestos = [{id:0,puesto:'puesto 0',salario:10,categoria:'cat 0',departamento:'dep 0'}]
+var puestos = []
 
 var puesto_formulario;
 
@@ -47,12 +47,18 @@ app.get('/limpiar_usuario_actual', (req,res)=>{
   res.send(usuario_actual)
 })
 
-app.get('/departamentos', (req,res)=>{
+app.get('/departamentos', async(req,res)=>{
   //query para seleecionar departamentos
+  departamentos.splice(0,departamentos.length)
+  await query_select('select * from departamento').then(data=>{
+    data.rows.forEach(e=>{
+      departamentos.push(e[1])
+    })
+  })
   res.send(departamentos)
 })
 
-app.get('/empleados', (req,res)=>{
+app.get('/empleados', async(req,res)=>{
   res.send(empleados)
 })
 
@@ -75,7 +81,14 @@ app.post('/c_id_revision_docs',(req,res)=>{
   res.status(200)
 })
 
-app.get('/puestos', (req,res)=>{
+app.get('/puestos', async(req,res)=>{
+  //{id:0,puesto:'puesto 0',salario:10,categoria:'cat 0',departamento:'dep 0'}
+  puestos.splice(0,puestos.length)
+  await query_select('SELECT p.ID_PUESTO,p.NOMBRE,p.SALARIO,c.NOMBRE, d.NOMBRE FROM PUESTO p INNER JOIN DEPARTAMENTO_PUESTO dp ON p.ID_PUESTO = dp.ID_PUESTO INNER JOIN DEPARTAMENTO d ON dp.ID_DEPARTAMENTO = d.ID_DEPARTAMENTO INNER JOIN PUESTO_CATEGORIA pc ON pc.ID_PUESTO = p.ID_PUESTO INNER JOIN CATEGORIA c ON c.ID_CATEGORIA = pc.ID_CATEGORIA').then(data=>{
+    data.rows.forEach(e=>{
+      puestos.push({id:e[0],puesto:e[1],salario:e[2],categoria:e[3],departamento:e[4]})
+    })
+  })
   res.send(puestos)
 })
 
@@ -85,7 +98,7 @@ app.get('/puesto_formulario', (req,res)=>{
 
 app.post('/c_puesto_formulario', (req,res)=>{
   //console.log(req.body.id);
-  const tempo = req.body.id
+  const tempo = req.body.puesto
   puesto_formulario = tempo
   res.status(200)
 })
@@ -378,6 +391,27 @@ const query_solo_insertar =  async(insertar)=> {
   }
 }
 
+const query_select =  async(select)=> {
+  let conn,retu;
+  try {
+    conn = await oracledb.getConnection(config_db);
+ 
+    retu = await conn.execute(select);
+    conn.commit()
+  } catch (err) {
+    console.log(err);
+  } finally {
+    if (conn) {
+      try {
+        await conn.close();
+      } catch (err) {
+        console.log('err');
+      }
+      return retu
+    }
+  }
+}
+
 const conexion =  async(consulta)=> {
   let conn,retu;
   try {
@@ -399,37 +433,6 @@ const conexion =  async(consulta)=> {
   }
 }
 
-app.get('/con', (req,res)=>{
-  let datos;
-  const conexion =  async()=> {
-    let conn;
-   
-    try {
-      conn = await oracledb.getConnection(config_db);
-   
-      const result = await conn.execute(
-        'select * from \"prueba\"'
-      );
-      datos = result;
-      console.log(result);
-    } catch (err) {
-      console.log(err);
-    } finally {
-      if (conn) {
-        try {
-          await conn.close();
-        } catch (err) {
-          console.log('err');
-        }
-      }
-    }
-  }
-  conexion()
-  res.send({data:"con"})
-})
-
 app.listen(port, async ()=>{
-    
     console.log("server on");
-    
 })

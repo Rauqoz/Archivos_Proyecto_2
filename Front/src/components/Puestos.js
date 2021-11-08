@@ -45,7 +45,7 @@ const Puestos = () => {
         .then(response => response.json())
         .then(result =>{
             var filas = result.map((e)=>{
-                return { ...e,aplicar:<Button color="danger" onClick={()=>{ aplicar_puesto(e)}} href='/aplicacion'>
+                return { ...e,aplicar:<Button color="danger" onClick={()=>{ aplicar_puesto(e)}} href='/aplicacion' >
                 Aplicar
                 </Button>}
                 
@@ -56,12 +56,11 @@ const Puestos = () => {
     }, [])
 
     const aplicar_puesto = (dato)=>{
-        console.log('un guest quiere aplicar a', dato.puesto);
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
         var raw = JSON.stringify({
-        "id": dato
+        "puesto": dato
         });
 
         var requestOptions = {
