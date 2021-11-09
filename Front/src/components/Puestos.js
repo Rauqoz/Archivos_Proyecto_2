@@ -45,7 +45,7 @@ const Puestos = () => {
         .then(response => response.json())
         .then(result =>{
             var filas = result.map((e)=>{
-                return { ...e,aplicar:<Button color="danger" onClick={()=>{ aplicar_puesto(e)}} href='/aplicacion' >
+                return { ...e,aplicar:<Button color="danger" onClick={()=>{ aplicar_puesto(e)}} >
                 Aplicar
                 </Button>}
                 
@@ -55,7 +55,7 @@ const Puestos = () => {
         .catch(error => console.log('error', error));
     }, [])
 
-    const aplicar_puesto = (dato)=>{
+    const aplicar_puesto = async(dato)=>{
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
@@ -70,10 +70,12 @@ const Puestos = () => {
         redirect: 'follow'
         };
 
-        fetch("http://localhost:5300/c_puesto_formulario", requestOptions)
+        await fetch("http://localhost:5300/c_puesto_formulario", requestOptions)
         .then(response => response.text())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
+        //cambio de pagina
+        window.location = '/aplicacion'
     }
 
     return (

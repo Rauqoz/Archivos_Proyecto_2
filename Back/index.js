@@ -3,6 +3,7 @@ const app = express();
 const cors = require('cors');
 const oracledb = require('oracledb');
 const { AQ_DEQ_WAAQ_MSG_DELIV_MODE_PERSISTENTIT_FOREVER } = require('oracledb');
+const { query } = require('express');
 //ORCL18   172.17.0.2
 //b6f6af56ce3b
 //values
@@ -20,8 +21,8 @@ const port = 5300;
 
 //variables internas 
 //admin reclutador coordinador aplicante
-var usuario_actual = {id: '0', rol:'admin',name:'Rau', dep:'0'};
-//var usuario_actual;
+//var usuario_actual = {id: '0', rol:'admin',name:'Rau', dep:'0'};
+var usuario_actual;
 var departamentos = [];
 //activo inactivo
 var empleados = [];
@@ -40,6 +41,27 @@ var id_revision_docs = -1;
 
 app.get('/usuario_actual', (req,res)=>{
     res.send(usuario_actual)
+})
+
+app.post('/login', async(req,res)=>{
+  //SELECT e.ID_EMPLEADO ,r.NOMBRE ,e.USUARIO,d.NOMBRE FROM EMPLEADO e INNER JOIN ROL r ON r.ID_ROL = e.ID_ROL INNER JOIN DEPARTAMENTO d ON d.ID_DEPARTAMENTO = e.ID_DEPARTAMENTO WHERE e.USUARIO = 'rau' AND e.CONTRASENA = 'rau'
+  //{id: '0', rol:'admin',name:'Rau', dep:'0'}
+  let tempo = req.body.login
+  let entro = false
+  if(tempo.rol === 'admin' || tempo.rol === 'reclutador' || tempo.rol === 'coordinador'){
+    await query_select(`SELECT e.ID_EMPLEADO ,r.NOMBRE ,e.USUARIO,d.NOMBRE FROM EMPLEADO e INNER JOIN ROL r ON r.ID_ROL = e.ID_ROL INNER JOIN DEPARTAMENTO d ON d.ID_DEPARTAMENTO = e.ID_DEPARTAMENTO WHERE e.USUARIO = '${tempo.user}' AND e.CONTRASENA = '${tempo.pass}'`).then(dato=>{
+      if(dato.rows.length !== 0){
+        dato.rows.forEach(e=>{
+          usuario_actual = {id: e[0], rol:e[1],name:e[2], dep:e[3]}
+        })
+        entro = true
+      }else{
+        usuario_actual = undefined
+      }
+    })
+  }
+
+  res.send(entro)
 })
 
 app.get('/limpiar_usuario_actual', (req,res)=>{
@@ -66,9 +88,6 @@ app.get('/empleados', async(req,res)=>{
   await query_select('SELECT e.ID_EMPLEADO ,e.USUARIO ,e.CONTRASENA ,e.FECHA_INICIO ,e.FECHA_FIN ,e.ESTADO,r.NOMBRE ,d.NOMBRE FROM EMPLEADO e INNER JOIN DEPARTAMENTO d ON d.ID_DEPARTAMENTO = e.ID_DEPARTAMENTO INNER JOIN ROL r ON r.ID_ROL = e.ID_ROL').then(data=>{
     if(data.rows.length !== 0){
       data.rows.forEach(e=>{
-        let fechai = e[3] 
-        let a_fechai = fechai.split('T')
-        console.log(a_fechai);
         empleados.push({id:e[0],usuario:e[1],contrasena:e[2],fecha_inicio:e[3],fecha_fin:e[4],estado:e[5],rol:e[6],dep:e[7]})
       })
     }
@@ -76,10 +95,25 @@ app.get('/empleados', async(req,res)=>{
   res.send(empleados)
 })
 
-app.get('/i_empleados', async(req,res)=>{
-  //INSERT INTO EMPLEADO (USUARIO,CONTRASENA,FECHA_INICIO,ESTADO,ID_ROL,ID_DEPARTAMENTO) VALUES ('rau','rau','04/03/1996','activo',(SELECT ID_ROL FROM ROL r WHERE r.NOMBRE = 'admin'),(SELECT ID_DEPARTAMENTO FROM DEPARTAMENTO d WHERE d.NOMBRE = 'ÁREA DE DESARROLLO'))
-  
-  res.status(200)
+app.post('/i_empleados', async(req,res)=>{
+  //INSERT INTO EMPLEADO (USUARIO,CONTRASENA,FECHA_INICIO,ESTADO,ID_ROL,ID_DEPARTAMENTO) VALUES ('rau','rau',TO_DATE('1996-04-03', 'YY-MM-DD'),'activo',(SELECT ID_ROL FROM ROL r WHERE r.NOMBRE = 'admin'),(SELECT ID_DEPARTAMENTO FROM DEPARTAMENTO d WHERE d.NOMBRE = 'ÁREA DE DESARROLLO'))
+  let tempo = req.body.emple
+  await query_solo_insertar(`INSERT INTO EMPLEADO (USUARIO,CONTRASENA,FECHA_INICIO,ESTADO,ID_ROL,ID_DEPARTAMENTO) VALUES ('${tempo.usuario}','${tempo.contrasena}',TO_DATE('${tempo.fecha_inicio}', 'YY-MM-DD'),'${tempo.estado}',(SELECT ID_ROL FROM ROL r WHERE r.NOMBRE = '${tempo.rol}'),(SELECT ID_DEPARTAMENTO FROM DEPARTAMENTO d WHERE d.NOMBRE = '${tempo.dep}'))`)
+  res.send(true)
+})
+
+app.post('/m_empleados', async(req,res)=>{
+  //UPDATE EMPLEADO SET USUARIO = 'ggefaeg', CONTRASENA = 'gege', ID_ROL = (SELECT ID_ROL FROM ROL r WHERE r.NOMBRE = 'admin'), ID_DEPARTAMENTO = (SELECT ID_DEPARTAMENTO FROM DEPARTAMENTO d WHERE d.NOMBRE = 'COORDINACIÓN DE DESARROLLO DE SISTEMAS') WHERE ID_EMPLEADO  = '28'
+  let tempo = req.body.emple
+  await query_solo_insertar(`UPDATE EMPLEADO SET USUARIO = '${tempo.usuario}', CONTRASENA = '${tempo.contrasena}', ID_ROL = (SELECT ID_ROL FROM ROL r WHERE r.NOMBRE = '${tempo.rol}'), ID_DEPARTAMENTO = (SELECT ID_DEPARTAMENTO FROM DEPARTAMENTO d WHERE d.NOMBRE = '${tempo.dep}') WHERE ID_EMPLEADO  = '${tempo.id}'`)
+  res.send(true)
+})
+
+app.post('/e_empleados', async(req,res)=>{
+  //DELETE FROM EMPLEADO e WHERE e.ID_EMPLEADO  = '28'
+  let tempo = req.body.emple
+  await query_solo_insertar(`DELETE FROM EMPLEADO e WHERE e.ID_EMPLEADO  = '${tempo.id}'`)
+  res.send(true)
 })
 
 app.get('/aplicantes', (req,res)=>{
@@ -98,7 +132,7 @@ app.get('/id_revision_docs', (req,res)=>{
 app.post('/c_id_revision_docs',(req,res)=>{
   const tempo = req.body.id
   id_revision_docs = tempo
-  res.status(200)
+  res.send(true)
 })
 
 app.get('/puestos', async(req,res)=>{
@@ -118,11 +152,11 @@ app.get('/puesto_formulario', (req,res)=>{
   res.send(puesto_formulario)
 })
 
-app.post('/c_puesto_formulario', (req,res)=>{
+app.post('/c_puesto_formulario',(req,res)=>{
   //console.log(req.body.id);
   const tempo = req.body.puesto
   puesto_formulario = tempo
-  res.status(200)
+  res.send(true)
 })
 
 var a_deps = [], a_pues = [], a_cate = [],a_requi = [], a_forma = [];

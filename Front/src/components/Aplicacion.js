@@ -3,13 +3,13 @@ import { Table,Container,Form,Button,Navbar,Nav  } from 'react-bootstrap'
 
 const Aplicacion = () => {
 
-    const [puesto, setPuesto] = useState({})
-    const dpi = useRef('')
-    const nombre = useRef('')
-    const apellido = useRef('')
-    const correo = useRef('')
-    const direccion = useRef('')
-    const telefono = useRef('')
+    const [puesto, setPuesto] = useState({ })
+    const dpi = useRef(' ')
+    const nombre = useRef(' ')
+    const apellido = useRef(' ')
+    const correo = useRef(' ')
+    const direccion = useRef(' ')
+    const telefono = useRef(' ')
     let fileReader;
 
     useEffect(() => {

@@ -61,6 +61,25 @@ const AU_modificar = () => {
       }
     
       const editar = (dato) => {
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+          "emple": dato
+        });
+
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+
+        fetch("http://localhost:5300/m_empleados", requestOptions)
+          .then(response => response.text())
+          .then(result => console.log(result))
+          .catch(error => console.log('error', error));
+        //tabla
         var arreglo = data;
         arreglo.map((registro,indice) => {
           if (dato.id === registro.id) {
@@ -78,6 +97,25 @@ const AU_modificar = () => {
       const eliminar = (dato) => {
         var opcion = window.confirm("Estás Seguro que deseas Eliminar a "+dato.usuario);
         if (opcion === true) {
+          var myHeaders = new Headers();
+          myHeaders.append("Content-Type", "application/json");
+
+          var raw = JSON.stringify({
+            "emple": dato
+          });
+
+          var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
+          };
+
+          fetch("http://localhost:5300/e_empleados", requestOptions)
+            .then(response => response.text())
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
+          //tabla
             var arreglo = data;
             arreglo.map((registro,indice) => {
                 if (dato === registro) {
@@ -93,8 +131,37 @@ const AU_modificar = () => {
     
       const insertar= ()=>{
         var valorNuevo= {...form};
-        console.log(valorNuevo);
+        var hoy = new Date()
+        var fecha;
+        if(hoy.getDate() < 10){
+          fecha = `${hoy.getFullYear()}-${(hoy.getMonth() + 1)}-0${hoy.getDate()}`
+        }else{
+          fecha = `${hoy.getFullYear()}-${(hoy.getMonth() + 1)}-${hoy.getDate()}`
+        }
+        valorNuevo.fecha_inicio = fecha
+        valorNuevo.estado = 'activo'
         valorNuevo.id=data.length+1;
+        console.log(valorNuevo);
+        //post
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+          "emple": valorNuevo
+        });
+
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+
+        fetch("http://localhost:5300/i_empleados", requestOptions)
+          .then(response => response.text())
+          .then(result => console.log(result))
+          .catch(error => console.log('error', error));
+        //tabla actualizada
         var lista= data;
         lista.push(valorNuevo);
         setModalInsertar(false)
@@ -136,7 +203,7 @@ const AU_modificar = () => {
                   <td>{dato.id}</td>
                   <td>{dato.usuario}</td>
                   <td>{dato.contrasena}</td>
-                  <td>{dato.fecha_inicio}</td>
+                  <td>{dato.fecha_inicio.split('T')[0]}</td>
                   <td>{dato.fecha_fin}</td>
                   <td>{dato.estado}</td>
                   <td>{dato.rol}</td>

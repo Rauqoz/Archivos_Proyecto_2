@@ -46,7 +46,7 @@ const Barra = () => {
                             </Nav>
                             <Navbar.Collapse className="justify-content-end">
                             <Navbar.Text>
-                                logeado como: {usuario_actual.name} {usuario_actual.id}
+                                logeado como: {usuario_actual.name} - id {usuario_actual.id}
                             </Navbar.Text>
                             <Nav className="me-auto">
                             <Nav.Link onClick={salir_logoff} href="/login">Log Off</Nav.Link>
@@ -68,7 +68,7 @@ const Barra = () => {
                                 </Nav>
                                 <Navbar.Collapse className="justify-content-end">
                                 <Navbar.Text>
-                                    logeado como: {usuario_actual.name} {usuario_actual.id}
+                                    logeado como: {usuario_actual.name} - id {usuario_actual.id}
                                 </Navbar.Text>
                                 <Nav className="me-auto">
                                 <Nav.Link onClick={salir_logoff}  href="/login">Log Off</Nav.Link>
@@ -91,7 +91,7 @@ const Barra = () => {
                                     </Nav>
                                     <Navbar.Collapse className="justify-content-end">
                                     <Navbar.Text>
-                                        logeado como: {usuario_actual.name} {usuario_actual.id}
+                                        logeado como: {usuario_actual.name} - id {usuario_actual.id}
                                     </Navbar.Text>
                                     <Nav className="me-auto">
                                     <Nav.Link onClick={salir_logoff}  href="/login">Log Off</Nav.Link>
@@ -112,7 +112,7 @@ const Barra = () => {
                                         </Nav>
                                         <Navbar.Collapse className="justify-content-end">
                                         <Navbar.Text>
-                                            logeado como: {usuario_actual.name} {usuario_actual.id}
+                                            logeado como: {usuario_actual.name} - id {usuario_actual.id}
                                         </Navbar.Text>
                                         <Nav className="me-auto">
                                         <Nav.Link onClick={salir_logoff} href="/login">Log Off</Nav.Link>
