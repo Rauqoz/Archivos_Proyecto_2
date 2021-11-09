@@ -80,7 +80,7 @@ const Puestos = () => {
 
     return (
         <Fragment>
-            <MDBDataTableV5 hover entriesOptions={[5, 20, 25]} entries={5} pagesAmount={4} data={datos} />
+            <MDBDataTableV5 hover entries={13} pagesAmount={4} data={datos} />
         </Fragment>
     )
 }

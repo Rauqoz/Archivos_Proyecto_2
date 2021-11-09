@@ -51,7 +51,7 @@ const Carga_Masiva = () => {
 
     return (
         <Fragment>
-            <Form >
+            <Form  className='pad'>
                 <Form.Group className="mb-3" >
                     <Form.Label>Abrir Archivo</Form.Label>
                     <Form.Control

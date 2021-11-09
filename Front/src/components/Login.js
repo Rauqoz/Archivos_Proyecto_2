@@ -1,11 +1,11 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useRef } from 'react'
 import { Form , Button  } from 'react-bootstrap';
 import Barra from './Barra';
 
 const Login = () => {
-    const usernameRef = React.useRef();
-    const passwordRef = React.useRef();
-    const rolref = React.useRef();
+    const usernameRef = useRef();
+    const passwordRef = useRef();
+    const rolref = useRef();
 
     const formulario = async()=>{
         let user = usernameRef.current.value
@@ -46,7 +46,7 @@ const Login = () => {
     return (
         <Fragment>
             <Barra/>
-            <Form >
+            <Form  className='pad'>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>User</Form.Label>
                 <Form.Control
