@@ -30,7 +30,15 @@ const AU_modificar = () => {
 
         fetch("http://localhost:5300/empleados", requestOptions)
         .then(response => response.json())
-        .then(result => setData(result))
+        .then(result => {
+          let pre_data = []
+          result.forEach(e=>{
+            if(e.estado === 'activo'){
+              pre_data.push(e)
+            }
+          })
+          setData(pre_data)
+        })
         .catch(error => console.log('error', error));
     }, [])
 

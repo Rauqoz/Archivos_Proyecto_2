@@ -27,9 +27,9 @@ var departamentos = [];
 //activo inactivo
 var empleados = [];
 //contratado despedido rechazado aceptado pendiente calificador
-var aplicantes = [ {id:0,dpi:0,nombre:'rau',apellido:'rau',puesto:'puesto', salario:0, estado:'pendiente', telefono:0,correo:'correo',cap:10 },{id:1,dpi:0,nombre:'g',apellido:'g',puesto:'puesto', salario:0, estado:'aceptado', telefono:0,correo:'correo',cap:10 },{id:2,dpi:0,nombre:'a',apellido:'a',puesto:'puesto', salario:0, estado:'pendiente', telefono:0,correo:'correo',cap:10 },{id:3,dpi:0,nombre:'t',apellido:'t',puesto:'puesto', salario:0, estado:'despedido', telefono:0,correo:'correo',cap:10 }];
+var aplicantes = [ {id:0,dpi:0,nombre:'rau',apellido:'rau',puesto:'puesto', salario:0, estado:'pendiente', telefono:0,correo:'correo',cap:10,dep:'' }];
 //aceptado rechazado pendiente
-var documentos = [ {id:0,id_usuario:0,estado:'pendiente',motivo:'0',rechazados:0,url:'0',extension:'0',nombre :'0' },{id:0,id_usuario:0,estado:'pendiente',motivo:'1',rechazados:0,url:'0',extension:'0',nombre :'1' },{id:0,id_usuario:0,estado:'pendiente',motivo:'2',rechazados:0,url:'0',extension:'0',nombre :'2' }];
+var documentos = [ {id:0,id_usuario:0,estado:'pendiente',motivo:'0',rechazados:0,url:'0',extension:'0',nombre :'0' }];
 
 var puestos = []
 
@@ -49,12 +49,14 @@ app.post('/login', async(req,res)=>{
   let tempo = req.body.login
   let entro = false
   if(tempo.rol === 'admin' || tempo.rol === 'reclutador' || tempo.rol === 'coordinador'){
-    await query_select(`SELECT e.ID_EMPLEADO ,r.NOMBRE ,e.USUARIO,d.NOMBRE FROM EMPLEADO e INNER JOIN ROL r ON r.ID_ROL = e.ID_ROL INNER JOIN DEPARTAMENTO d ON d.ID_DEPARTAMENTO = e.ID_DEPARTAMENTO WHERE e.USUARIO = '${tempo.user}' AND e.CONTRASENA = '${tempo.pass}'`).then(dato=>{
+    await query_select(`SELECT e.ID_EMPLEADO ,r.NOMBRE ,e.USUARIO,d.NOMBRE,e.ESTADO FROM EMPLEADO e INNER JOIN ROL r ON r.ID_ROL = e.ID_ROL INNER JOIN DEPARTAMENTO d ON d.ID_DEPARTAMENTO = e.ID_DEPARTAMENTO WHERE e.USUARIO = '${tempo.user}' AND e.CONTRASENA = '${tempo.pass}'`).then(dato=>{
       if(dato.rows.length !== 0){
         dato.rows.forEach(e=>{
           usuario_actual = {id: e[0], rol:e[1],name:e[2], dep:e[3]}
+          if(e[4] === 'activo'){
+            entro = true
+          }
         })
-        entro = true
       }else{
         usuario_actual = undefined
       }
@@ -110,18 +112,81 @@ app.post('/m_empleados', async(req,res)=>{
 })
 
 app.post('/e_empleados', async(req,res)=>{
-  //DELETE FROM EMPLEADO e WHERE e.ID_EMPLEADO  = '28'
+  //UPDATE EMPLEADO SET ESTADO = 'inactivo' WHERE ID_EMPLEADO = ''
   let tempo = req.body.emple
-  await query_solo_insertar(`DELETE FROM EMPLEADO e WHERE e.ID_EMPLEADO  = '${tempo.id}'`)
+  await query_solo_insertar(`UPDATE EMPLEADO SET ESTADO = 'inactivo' WHERE ID_EMPLEADO = '${tempo.id}'`)
   res.send(true)
 })
 
-app.get('/aplicantes', (req,res)=>{
-  res.send(aplicantes)
+app.get('/aplicantes', async(req,res)=>{
+  //{id:0,dpi:0,nombre:'rau',apellido:'rau',puesto:'puesto', salario:0, estado:'pendiente', telefono:0,correo:'correo',cap:10 }
+  aplicantes.splice(0,aplicantes.length)
+  await query_select(`SELECT u.ID_USUARIO ,u.DPI ,u.NOMBRE ,u.APELLIDO,p.NOMBRE ,p.SALARIO , up.ESTADO , u.TELEFONO ,u.CORREO,d.CAPITAL_TOTAL,d.NOMBRE FROM USUARIO u INNER JOIN USUARIO_PUESTO up ON up.ID_USUARIO = u.ID_USUARIO INNER JOIN PUESTO p ON p.ID_PUESTO = up.ID_PUESTO INNER JOIN DEPARTAMENTO_PUESTO dp ON dp.ID_PUESTO = p.ID_PUESTO INNER JOIN DEPARTAMENTO d ON d.ID_DEPARTAMENTO = dp.ID_DEPARTAMENTO`).then(data=>{
+    if(data.rows.length !== 0){
+      data.rows.forEach(e=>{
+        aplicantes.push({id:e[0],dpi:e[1],nombre:e[2],apellido:e[3],puesto:e[4], salario:e[5], estado:e[6], telefono:e[7],correo:e[8],cap:e[9],dep:e[10] })
+      })
+    }
+  })
+  res.send({aplicantes,usuario_actual})
 })
 
-app.get('/documentos', (req,res)=>{
+app.post('/i_aplicantes', async(req,res)=>{
+  //INSERT INTO USUARIO (ID_ROL,PRIMER_LOG,DPI,NOMBRE,APELLIDO,CORREO,DIRECCION,TELEFONO,ID_EMPLEADO,CONTRASENA) VALUES ((SELECT ID_ROL FROM ROL r WHERE r.NOMBRE = 'guest'), 'si',10, 'ed','ape','cor','dir',10,(SELECT ID_EMPLEADO FROM EMPLEADO e INNER JOIN ROL r2 ON r2.ID_ROL = e.ID_ROL INNER JOIN DEPARTAMENTO d ON d.ID_DEPARTAMENTO = e.ID_DEPARTAMENTO WHERE r2.NOMBRE = 'reclutador' AND d.NOMBRE = 'ÁREA DE DESARROLLO'), '123')
+  //INSERT INTO USUARIO_PUESTO (ID_USUARIO,ID_PUESTO,CALIFICACION,ESTADO) VALUES ((SELECT ID_USUARIO FROM USUARIO u WHERE u.DPI = ''),'',0,'pendiente')
+  //INSERT INTO DOCUMENTO (ID_USUARIO,ESTADO,MOTIVO,RECHAZOS,URL,EXTENSION,NOMBRE) VALUES ((SELECT ID_USUARIO FROM USUARIO u WHERE u.DPI = ''), 'pendiente',' ',0,'url','extension','nombre')
+  let tempo = req.body.aplica
+  let random = parseInt(Math.random() * (999 - 100) + 100);
+  let extesion_doc = tempo.cv.split('.')[1]
+  let nombre_doc = tempo.cv.split('.')[0]
+  //tabla usuario
+  await query_solo_insertar(`INSERT INTO USUARIO (ID_ROL,PRIMER_LOG,DPI,NOMBRE,APELLIDO,CORREO,DIRECCION,TELEFONO,ID_EMPLEADO,CONTRASENA) VALUES ((SELECT ID_ROL FROM ROL r WHERE r.NOMBRE = 'guest'), 'si','${tempo.dpi}', '${tempo.nombre}','${tempo.apellido}','${tempo.correo}','${tempo.direccion}','${tempo.telefono}',(SELECT ID_EMPLEADO FROM EMPLEADO e INNER JOIN ROL r2 ON r2.ID_ROL = e.ID_ROL INNER JOIN DEPARTAMENTO d ON d.ID_DEPARTAMENTO = e.ID_DEPARTAMENTO WHERE r2.NOMBRE = 'reclutador' AND d.NOMBRE = '${tempo.dep}'), '${random}')`)
+  //tabla usuario puesto
+  await query_solo_insertar(`INSERT INTO USUARIO_PUESTO (ID_USUARIO,ID_PUESTO,CALIFICACION,ESTADO) VALUES ((SELECT ID_USUARIO FROM USUARIO u WHERE u.DPI = '${tempo.dpi}'),'${tempo.id_puesto}',0,'pendiente')`)
+  //tabla documento
+  await query_solo_insertar(`INSERT INTO DOCUMENTO (ID_USUARIO,ESTADO,MOTIVO,RECHAZOS,URL,EXTENSION,NOMBRE) VALUES ((SELECT ID_USUARIO FROM USUARIO u WHERE u.DPI = '${tempo.dpi}'), 'pendiente',' ',0,'${tempo.cv}','${extesion_doc}','${nombre_doc}')`)
+  res.send(true)
+})
+
+app.post('/a_aplicantes', async(req,res)=>{
+  //UPDATE USUARIO_PUESTO up SET up.ESTADO = 'aceptado' WHERE up.ID_USUARIO = (SELECT u.ID_USUARIO FROM USUARIO u WHERE u.DPI = '123')
+  let tempo = req.body.aplica
+  await query_select(`UPDATE USUARIO_PUESTO up SET up.ESTADO = 'aceptado' WHERE up.ID_USUARIO = (SELECT u.ID_USUARIO FROM USUARIO u WHERE u.DPI = '${tempo.dpi}')`)
+  res.send(true)
+})
+
+app.post('/r_aplicantes', async(req,res)=>{
+  //UPDATE USUARIO_PUESTO up SET up.ESTADO = 'rechazado' WHERE up.ID_USUARIO = (SELECT u.ID_USUARIO FROM USUARIO u WHERE u.DPI = '123')
+  let tempo = req.body.aplica
+  await query_select(`UPDATE USUARIO_PUESTO up SET up.ESTADO = 'rechazado' WHERE up.ID_USUARIO = (SELECT u.ID_USUARIO FROM USUARIO u WHERE u.DPI = '${tempo.dpi}')`)
+  res.send(true)
+})
+
+app.get('/documentos', async(req,res)=>{
+  //{id:0,id_usuario:0,estado:'pendiente',motivo:'0',rechazados:0,url:'0',extension:'0',nombre :'0' }
+  documentos.splice(0,documentos.length)
+  await query_select(`SELECT * FROM DOCUMENTO`).then(data=>{
+    if(data.rows.length !== 0){
+      data.rows.forEach(e=>{
+        documentos.push({id:e[0],id_usuario:e[1],estado:e[2],motivo:e[3],rechazados:e[4],url:e[5],extension:e[6],nombre :e[7] })
+      })
+    }
+  })
   res.send(documentos)
+})
+
+app.post('/a_documentos', async(req,res)=>{
+  //UPDATE DOCUMENTO d SET d.ESTADO = 'aceptado' WHERE d.ID_DOCUMENTO = ''
+  let tempo = req.body.aplica
+  await query_select(`UPDATE DOCUMENTO d SET d.ESTADO = 'aceptado' WHERE d.ID_DOCUMENTO = '${tempo.id}'`)
+  res.send(true)
+})
+
+app.post('/r_documentos', async(req,res)=>{
+  //UPDATE DOCUMENTO d SET d.ESTADO = 'rechazado', d.MOTIVO = '', d.RECHAZOS  = '' WHERE d.ID_DOCUMENTO = ''
+  let tempo = req.body.aplica
+  await query_select(`UPDATE DOCUMENTO d SET d.ESTADO = 'rechazado', d.MOTIVO = '${tempo.motivo}', d.RECHAZOS  = '${tempo.rechazados}' WHERE d.ID_DOCUMENTO = '${tempo.id}'`)
+  res.send(true)
 })
 
 app.get('/id_revision_docs', (req,res)=>{

@@ -61,7 +61,7 @@ const AU_ver = () => {
 
     return (
         <Fragment>
-            <MDBDataTableV5 className='pad' hover entriesOptions={[5, 20, 25]} entries={5} pagesAmount={4} data={datatable} />
+            <MDBDataTableV5 hover entriesOptions={[5, 20, 25]} entries={5} pagesAmount={4} data={datatable} />
         </Fragment>
     )
 }

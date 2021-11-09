@@ -60,7 +60,7 @@ const RE_expediente = () => {
         .then(response => response.json())
         .then(result =>{
             var filas = result.map( (e)=>{
-                if(e.id_usuario === id_revision_docs){
+                if(e.id_usuario === id_revision_docs && e.estado === 'pendiente'){
                     return { ...e,aceptar:<Button color="success" onClick={()=>{ doc_aceptado(e)} }>
                 Aceptar
               </Button>, rechazar:<Button color="danger" onClick={()=>{ doc_rechazado(e)} }>
@@ -79,10 +79,51 @@ const RE_expediente = () => {
     }, [])
 
     const doc_aceptado = (dato)=>{
-        console.log('el vato',dato.nombre, 'fue aceptado ');
+        //post
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+          "aplica": dato
+        });
+
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+
+        fetch("http://localhost:5300/a_documentos", requestOptions)
+          .then(response => response.text())
+          .then(result => console.log(result))
+          .catch(error => console.log('error', error));
     }
     const doc_rechazado = (dato)=>{
-        console.log('el vato',dato.nombre, 'fue rechazado');
+        let motivo = prompt('Porque lo Rechazas?')
+        if(motivo !== null && motivo !== ''){
+            dato.motivo = motivo
+            dato.rechazados += 1
+            var myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+    
+            var raw = JSON.stringify({
+              "aplica": dato
+            });
+    
+            var requestOptions = {
+              method: 'POST',
+              headers: myHeaders,
+              body: raw,
+              redirect: 'follow'
+            };
+    
+            fetch("http://localhost:5300/r_documentos", requestOptions)
+              .then(response => response.text())
+              .then(result => console.log(result))
+              .catch(error => console.log('error', error));
+        }
+
     }
 
     const doc_descargar = (dato)=>{
@@ -91,7 +132,7 @@ const RE_expediente = () => {
 
     return (
         <Fragment>
-            <MDBDataTableV5 className='pad' hover entriesOptions={[5, 20, 25]} entries={5} pagesAmount={4} data={datos} />
+            <MDBDataTableV5 hover entries={5} pagesAmount={4} data={datos} />
         </Fragment>
     )
 }

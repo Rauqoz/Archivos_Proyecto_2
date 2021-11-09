@@ -3,14 +3,14 @@ import { Table,Container,Form,Button,Navbar,Nav  } from 'react-bootstrap'
 
 const Aplicacion = () => {
 
-    const [puesto, setPuesto] = useState({ })
+    const [puesto, setPuesto] = useState({})
+    const [cv_archivo, setCv_archivo] = useState({})
     const dpi = useRef(' ')
     const nombre = useRef(' ')
     const apellido = useRef(' ')
     const correo = useRef(' ')
     const direccion = useRef(' ')
     const telefono = useRef(' ')
-    let fileReader;
 
     useEffect(() => {
         var formdata = new FormData();
@@ -34,19 +34,32 @@ const Aplicacion = () => {
         let correo_f = correo.current.value
         let direccion_f = direccion.current.value
         let telefono_f = telefono.current.value
-        console.log(dpi_f,nombre_f,apellido_f,correo_f,direccion_f,telefono_f);
+        //post
+        let dato = {id_puesto:puesto.id,dpi:dpi_f, nombre: nombre_f, apellido: apellido_f, correo: correo_f,direccion: direccion_f, telefono: telefono_f, cv: cv_archivo.name,dep:puesto.departamento}
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+          "aplica": dato
+        });
+
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+
+        fetch("http://localhost:5300/i_aplicantes", requestOptions)
+          .then(response => response.text())
+          .then(result => console.log(result))
+          .catch(error => console.log('error', error));
     }
 
     const escoger_archivo = (file)=>{
-        fileReader = new FileReader();
-        fileReader.readAsText(file);
-        fileReader.onloadend = leer_archivo;
+        setCv_archivo(file)
     }
     
-    const leer_archivo = (e)=>{
-        const datos_archivo = fileReader.result;
-        console.log(datos_archivo);
-    }
     
     return (
         <Fragment>
@@ -159,13 +172,13 @@ const Aplicacion = () => {
                     <Form.Label>CV - Curriculum</Form.Label>
                     <Form.Control
                         type="file"
-                        id="file" acept='.xml'
+                        id="file"
                         onChange={e=>escoger_archivo(e.target.files[0])}
                     />
                     </Form.Group>
                     <Form.Group>
                     <Button block='true' size="lg" variant='success' onClick={formulario}>
-                    Login
+                    Aplicar
                     </Button>
                     </Form.Group>
                 </Form>

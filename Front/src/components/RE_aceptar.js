@@ -6,6 +6,12 @@ const RE_aceptar = () => {
     const [datos, setDatos] = useState({})
 
     useEffect(() => {
+        var formdata = new FormData();
+        var requestOptions = {
+        method: 'GET',
+        data: formdata,
+        redirect: 'follow'
+        };
         const columns = [
             {
                 label: 'Nombre',
@@ -55,17 +61,11 @@ const RE_aceptar = () => {
             }
             ]
         
-        var formdata = new FormData();
-        var requestOptions = {
-        method: 'GET',
-        data: formdata,
-        redirect: 'follow'
-        };
         fetch("http://localhost:5300/aplicantes", requestOptions)
         .then(response => response.json())
         .then(result =>{
-            var filas = result.map((e)=>{
-                if(e.estado === 'pendiente'){
+            var filas = result.aplicantes.map((e)=>{
+                if(e.estado === 'pendiente' && result.usuario_actual.dep === e.dep){
                     return { ...e,revision:<Button color="primary" onClick={()=>{ revisar_docs(e)} } href='/access/revision_expedientes'>
                     Revisar Docs
                   </Button>,aceptar:<Button color="success" onClick={()=>{ aplicante_aceptado(e)} }>
@@ -83,10 +83,47 @@ const RE_aceptar = () => {
     }, [])
 
     const aplicante_aceptado = (dato)=>{
-        console.log('el vato',dato.nombre, 'fue aceptado ');
+        //post
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+          "aplica": dato
+        });
+
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+
+        fetch("http://localhost:5300/a_aplicantes", requestOptions)
+          .then(response => response.text())
+          .then(result => console.log(result))
+          .catch(error => console.log('error', error));
+        
     }
     const aplicante_rechazado = (dato)=>{
-        console.log('el vato',dato.nombre, 'fue rechazado');
+        //post
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+          "aplica": dato
+        });
+
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+
+        fetch("http://localhost:5300/r_aplicantes", requestOptions)
+          .then(response => response.text())
+          .then(result => console.log(result))
+          .catch(error => console.log('error', error));
     }
     const revisar_docs = (dato)=>{
         var myHeaders = new Headers();
@@ -112,7 +149,7 @@ const RE_aceptar = () => {
 
     return (
         <Fragment>
-            <MDBDataTableV5 className='pad' hover entriesOptions={[5, 20, 25]} entries={5} pagesAmount={4} data={datos} />
+            <MDBDataTableV5 hover entriesOptions={[5, 20, 25]} entries={5} pagesAmount={4} data={datos} />
         </Fragment>
     )
 }
