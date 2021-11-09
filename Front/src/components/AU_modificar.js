@@ -93,6 +93,7 @@ const AU_modificar = () => {
     
       const insertar= ()=>{
         var valorNuevo= {...form};
+        console.log(valorNuevo);
         valorNuevo.id=data.length+1;
         var lista= data;
         lista.push(valorNuevo);

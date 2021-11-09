@@ -24,7 +24,7 @@ var usuario_actual = {id: '0', rol:'admin',name:'Rau', dep:'0'};
 //var usuario_actual;
 var departamentos = [];
 //activo inactivo
-var empleados = [ {id:0, usuario:'rau', contrasena:'123', fecha_inicio:'30/12/2021', fecha_fin: '', estado:'activo', rol:'admin', dep:'RRHH'}];
+var empleados = [];
 //contratado despedido rechazado aceptado pendiente calificador
 var aplicantes = [ {id:0,dpi:0,nombre:'rau',apellido:'rau',puesto:'puesto', salario:0, estado:'pendiente', telefono:0,correo:'correo',cap:10 },{id:1,dpi:0,nombre:'g',apellido:'g',puesto:'puesto', salario:0, estado:'aceptado', telefono:0,correo:'correo',cap:10 },{id:2,dpi:0,nombre:'a',apellido:'a',puesto:'puesto', salario:0, estado:'pendiente', telefono:0,correo:'correo',cap:10 },{id:3,dpi:0,nombre:'t',apellido:'t',puesto:'puesto', salario:0, estado:'despedido', telefono:0,correo:'correo',cap:10 }];
 //aceptado rechazado pendiente
@@ -51,15 +51,35 @@ app.get('/departamentos', async(req,res)=>{
   //query para seleecionar departamentos
   departamentos.splice(0,departamentos.length)
   await query_select('select * from departamento').then(data=>{
-    data.rows.forEach(e=>{
-      departamentos.push(e[1])
-    })
+    if(data.rows.length !== 0){
+      data.rows.forEach(e=>{
+        departamentos.push(e[1])
+      })
+    }
   })
   res.send(departamentos)
 })
 
 app.get('/empleados', async(req,res)=>{
+  //{id:0, usuario:'rau', contrasena:'123', fecha_inicio:'30/12/2021', fecha_fin: '', estado:'activo', rol:'admin', dep:'RRHH'}
+  empleados.splice(0,empleados.length)
+  await query_select('SELECT e.ID_EMPLEADO ,e.USUARIO ,e.CONTRASENA ,e.FECHA_INICIO ,e.FECHA_FIN ,e.ESTADO,r.NOMBRE ,d.NOMBRE FROM EMPLEADO e INNER JOIN DEPARTAMENTO d ON d.ID_DEPARTAMENTO = e.ID_DEPARTAMENTO INNER JOIN ROL r ON r.ID_ROL = e.ID_ROL').then(data=>{
+    if(data.rows.length !== 0){
+      data.rows.forEach(e=>{
+        let fechai = e[3] 
+        let a_fechai = fechai.split('T')
+        console.log(a_fechai);
+        empleados.push({id:e[0],usuario:e[1],contrasena:e[2],fecha_inicio:e[3],fecha_fin:e[4],estado:e[5],rol:e[6],dep:e[7]})
+      })
+    }
+  })
   res.send(empleados)
+})
+
+app.get('/i_empleados', async(req,res)=>{
+  //INSERT INTO EMPLEADO (USUARIO,CONTRASENA,FECHA_INICIO,ESTADO,ID_ROL,ID_DEPARTAMENTO) VALUES ('rau','rau','04/03/1996','activo',(SELECT ID_ROL FROM ROL r WHERE r.NOMBRE = 'admin'),(SELECT ID_DEPARTAMENTO FROM DEPARTAMENTO d WHERE d.NOMBRE = 'ÁREA DE DESARROLLO'))
+  
+  res.status(200)
 })
 
 app.get('/aplicantes', (req,res)=>{
@@ -85,9 +105,11 @@ app.get('/puestos', async(req,res)=>{
   //{id:0,puesto:'puesto 0',salario:10,categoria:'cat 0',departamento:'dep 0'}
   puestos.splice(0,puestos.length)
   await query_select('SELECT p.ID_PUESTO,p.NOMBRE,p.SALARIO,c.NOMBRE, d.NOMBRE FROM PUESTO p INNER JOIN DEPARTAMENTO_PUESTO dp ON p.ID_PUESTO = dp.ID_PUESTO INNER JOIN DEPARTAMENTO d ON dp.ID_DEPARTAMENTO = d.ID_DEPARTAMENTO INNER JOIN PUESTO_CATEGORIA pc ON pc.ID_PUESTO = p.ID_PUESTO INNER JOIN CATEGORIA c ON c.ID_CATEGORIA = pc.ID_CATEGORIA').then(data=>{
-    data.rows.forEach(e=>{
-      puestos.push({id:e[0],puesto:e[1],salario:e[2],categoria:e[3],departamento:e[4]})
-    })
+    if(data.rows.length !== 0){
+      data.rows.forEach(e=>{
+        puestos.push({id:e[0],puesto:e[1],salario:e[2],categoria:e[3],departamento:e[4]})
+      })
+    }
   })
   res.send(puestos)
 })
