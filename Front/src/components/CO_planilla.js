@@ -44,10 +44,6 @@ const CO_planilla = () => {
             {
                 label: 'Rechazar',
                 field: 'rechazar',
-            },
-            {
-                label: 'Despedir',
-                field: 'despedir',
             }
             ]
         
@@ -60,13 +56,17 @@ const CO_planilla = () => {
         fetch("http://localhost:5300/aplicantes", requestOptions)
         .then(response => response.json())
         .then(result =>{
-            var filas = result.map((e)=>{
-                if(e.estado === 'aceptado'){
+            var filas = result.aplicantes.map((e)=>{
+                if(e.estado === 'aceptado' && result.usuario_actual.dep === e.dep){
                     return { ...e,contratar:<Button color="success" onClick={()=>{ contratado(e)} }>
                 Contratar
               </Button>, rechazar:<Button color="danger" onClick={()=>{ rechazado(e)} }>
                     Rechazar
-                  </Button>,despedir:<Button color="primary" onClick={()=>{ despedido(e)} }>
+                  </Button>}
+                }if(e.estado === 'contratado' && result.usuario_actual.dep === e.dep){
+                    return { ...e,contratar:<Button color="success" onClick={()=>{ contratado(e)} }>
+                Contratar
+              </Button>, rechazar: <Button color="primary" onClick={()=>{ despedido(e)} }>
                     Despedir
                   </Button>,}
                 }else{
@@ -78,15 +78,74 @@ const CO_planilla = () => {
         .catch(error => console.log('error', error));
     }, [])
 
-    const contratado = (dato)=>{
-        console.log('el capital maximo es',dato.cap);
-        console.log('el vato',dato.nombre, 'fue aceptado ');
+    const contratado = async(dato)=>{
+        //post
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+          "aplica": dato
+        });
+
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+
+        await fetch("http://localhost:5300/a_aplicantes_c", requestOptions)
+          .then(response => response.text())
+          .then(result => console.log(result))
+          .catch(error => console.log('error', error));
+
+        window.location = '/access/admin_planilla'
     }
-    const rechazado = (dato)=>{
-        console.log('el vato',dato.nombre, 'fue rechazado');
+    const rechazado = async(dato)=>{
+        //post
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+          "aplica": dato
+        });
+
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+
+        await fetch("http://localhost:5300/r_aplicantes_c", requestOptions)
+          .then(response => response.text())
+          .then(result => console.log(result))
+          .catch(error => console.log('error', error));
+
+        window.location = '/access/admin_planilla'
     }
-    const despedido = (dato)=>{
-        console.log('el vato',dato.nombre, 'fue despedido');
+    const despedido = async(dato)=>{
+        //post
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify({
+          "aplica": dato
+        });
+
+        var requestOptions = {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+
+        await fetch("http://localhost:5300/d_aplicantes_c", requestOptions)
+          .then(response => response.text())
+          .then(result => console.log(result))
+          .catch(error => console.log('error', error));
+
+        window.location = '/access/admin_planilla'
     }
 
     return (

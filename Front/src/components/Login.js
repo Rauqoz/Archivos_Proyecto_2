@@ -66,9 +66,7 @@ const Login = () => {
                 <Form.Label>Rol</Form.Label>
                 <Form.Select ref={rolref}  aria-label="Rol">
                     <option value="aplicante">Aplicante</option>
-                    <option value="reclutador">Reclutador</option>
-                    <option value="coordinador">Coordinador</option>
-                    <option value="admin">Admin</option>
+                    <option value="empleado">Empleado</option>
                 </Form.Select>
                 </Form.Group>
                 <Form.Group>

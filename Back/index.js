@@ -35,7 +35,7 @@ var puestos = []
 
 var puesto_formulario;
 
-var requisitos = [ {} ]
+var requisitos = [ {requi:'',forma:''} ]
 
 var id_revision_docs = -1;
 
@@ -54,11 +54,25 @@ app.get('/usuario_actual', (req,res)=>{
 
 app.post('/login', async(req,res)=>{
   //SELECT e.ID_EMPLEADO ,r.NOMBRE ,e.USUARIO,d.NOMBRE FROM EMPLEADO e INNER JOIN ROL r ON r.ID_ROL = e.ID_ROL INNER JOIN DEPARTAMENTO d ON d.ID_DEPARTAMENTO = e.ID_DEPARTAMENTO WHERE e.USUARIO = 'rau' AND e.CONTRASENA = 'rau'
+  //SELECT e.ID_EMPLEADO ,r.NOMBRE ,e.USUARIO,d.NOMBRE,e.ESTADO FROM EMPLEADO e INNER JOIN ROL r ON r.ID_ROL = e.ID_ROL INNER JOIN DEPARTAMENTO d ON d.ID_DEPARTAMENTO = e.ID_DEPARTAMENTO WHERE e.USUARIO = '${tempo.user}' AND e.CONTRASENA = '${tempo.pass}' AND r.NOMBRE  = 'aplicante'
   //{id: '0', rol:'admin',name:'Rau', dep:'0'}
   let tempo = req.body.login
   let entro = false
-  if(tempo.rol === 'admin' || tempo.rol === 'reclutador' || tempo.rol === 'coordinador'){
+  if(tempo.rol === 'empleado'){
     await query_select(`SELECT e.ID_EMPLEADO ,r.NOMBRE ,e.USUARIO,d.NOMBRE,e.ESTADO FROM EMPLEADO e INNER JOIN ROL r ON r.ID_ROL = e.ID_ROL INNER JOIN DEPARTAMENTO d ON d.ID_DEPARTAMENTO = e.ID_DEPARTAMENTO WHERE e.USUARIO = '${tempo.user}' AND e.CONTRASENA = '${tempo.pass}'`).then(dato=>{
+      if(dato.rows.length !== 0){
+        dato.rows.forEach(e=>{
+          usuario_actual = {id: e[0], rol:e[1],name:e[2], dep:e[3]}
+          if(e[4] === 'activo'){
+            entro = true
+          }
+        })
+      }else{
+        usuario_actual = undefined
+      }
+    })
+  }else{
+    await query_select(`SELECT e.ID_EMPLEADO ,r.NOMBRE ,e.USUARIO,d.NOMBRE,e.ESTADO FROM EMPLEADO e INNER JOIN ROL r ON r.ID_ROL = e.ID_ROL INNER JOIN DEPARTAMENTO d ON d.ID_DEPARTAMENTO = e.ID_DEPARTAMENTO WHERE e.USUARIO = '${tempo.user}' AND e.CONTRASENA = '${tempo.pass}' AND r.NOMBRE  = 'aplicante'`).then(dato=>{
       if(dato.rows.length !== 0){
         dato.rows.forEach(e=>{
           usuario_actual = {id: e[0], rol:e[1],name:e[2], dep:e[3]}
@@ -156,6 +170,14 @@ app.post('/i_aplicantes', async(req,res)=>{
   res.send(true)
 })
 
+app.post('/aaplicante_aplicantes', async(req,res)=>{
+  //UPDATE USUARIO_PUESTO up SET up.ESTADO = 'aplicante' WHERE up.ID_USUARIO = (SELECT u.ID_USUARIO FROM USUARIO u WHERE u.DPI = '123')
+  let tempo = req.body.aplica
+  await query_select(`UPDATE USUARIO_PUESTO up SET up.ESTADO = 'aplicante' WHERE up.ID_USUARIO = (SELECT u.ID_USUARIO FROM USUARIO u WHERE u.DPI = '${tempo.dpi}')`)
+  await query_select(`UPDATE USUARIO u SET u.ID_ROL = (SELECT ID_ROL FROM ROL r WHERE r.NOMBRE = 'aplicante') WHERE u.DPI  = '${tempo.dpi}'`)
+  res.send(true)
+})
+
 app.post('/a_aplicantes', async(req,res)=>{
   //UPDATE USUARIO_PUESTO up SET up.ESTADO = 'aceptado' WHERE up.ID_USUARIO = (SELECT u.ID_USUARIO FROM USUARIO u WHERE u.DPI = '123')
   let tempo = req.body.aplica
@@ -167,6 +189,27 @@ app.post('/r_aplicantes', async(req,res)=>{
   //UPDATE USUARIO_PUESTO up SET up.ESTADO = 'rechazado' WHERE up.ID_USUARIO = (SELECT u.ID_USUARIO FROM USUARIO u WHERE u.DPI = '123')
   let tempo = req.body.aplica
   await query_select(`UPDATE USUARIO_PUESTO up SET up.ESTADO = 'rechazado' WHERE up.ID_USUARIO = (SELECT u.ID_USUARIO FROM USUARIO u WHERE u.DPI = '${tempo.dpi}')`)
+  res.send(true)
+})
+
+app.post('/a_aplicantes_c', async(req,res)=>{
+  //UPDATE USUARIO_PUESTO up SET up.ESTADO = 'contratado' WHERE up.ID_USUARIO = (SELECT u.ID_USUARIO FROM USUARIO u WHERE u.DPI = '123')
+  let tempo = req.body.aplica
+  await query_select(`UPDATE USUARIO_PUESTO up SET up.ESTADO = 'contratado' WHERE up.ID_USUARIO = (SELECT u.ID_USUARIO FROM USUARIO u WHERE u.DPI = '${tempo.dpi}')`)
+  res.send(true)
+})
+
+app.post('/r_aplicantes_c', async(req,res)=>{
+  //UPDATE USUARIO_PUESTO up SET up.ESTADO = 'rechazado' WHERE up.ID_USUARIO = (SELECT u.ID_USUARIO FROM USUARIO u WHERE u.DPI = '123')
+  let tempo = req.body.aplica
+  await query_select(`UPDATE USUARIO_PUESTO up SET up.ESTADO = 'rechazado' WHERE up.ID_USUARIO = (SELECT u.ID_USUARIO FROM USUARIO u WHERE u.DPI = '${tempo.dpi}')`)
+  res.send(true)
+})
+
+app.post('/d_aplicantes_c', async(req,res)=>{
+  //UPDATE USUARIO_PUESTO up SET up.ESTADO = 'despedido' WHERE up.ID_USUARIO = (SELECT u.ID_USUARIO FROM USUARIO u WHERE u.DPI = '123')
+  let tempo = req.body.aplica
+  await query_select(`UPDATE USUARIO_PUESTO up SET up.ESTADO = 'despedido' WHERE up.ID_USUARIO = (SELECT u.ID_USUARIO FROM USUARIO u WHERE u.DPI = '${tempo.dpi}')`)
   res.send(true)
 })
 
@@ -206,6 +249,24 @@ app.post('/c_id_revision_docs',(req,res)=>{
   const tempo = req.body.id
   id_revision_docs = tempo
   res.send(true)
+})
+
+app.post('/c_id_revision_docs_requis', async(req,res)=>{
+  //SELECT r.NOMBRE ,f.NOMBRE FROM REQUISITO r INNER JOIN  REQUISITO_FORMATO rf ON rf.ID_REQUISITO = r.ID_REQUISITO INNER JOIN FORMATO f ON f.ID_FORMATO = rf.ID_FORMATO INNER JOIN PUESTO_REQUISITO pr ON pr.ID_REQUISITO = r.ID_REQUISITO INNER JOIN PUESTO p ON p.ID_PUESTO = pr.ID_PUESTO WHERE p.NOMBRE = ''
+  requisitos.splice(0,requisitos.length)
+  const tempo = req.body.id
+  await query_select(`SELECT r.NOMBRE ,f.NOMBRE FROM REQUISITO r INNER JOIN  REQUISITO_FORMATO rf ON rf.ID_REQUISITO = r.ID_REQUISITO INNER JOIN FORMATO f ON f.ID_FORMATO = rf.ID_FORMATO INNER JOIN PUESTO_REQUISITO pr ON pr.ID_REQUISITO = r.ID_REQUISITO INNER JOIN PUESTO p ON p.ID_PUESTO = pr.ID_PUESTO WHERE p.NOMBRE = '${tempo.puesto}'`).then(datos=>{
+    if(datos.rows.length !== 0){
+      datos.rows.forEach(e=>{
+        requisitos.push({requi: e[0],forma: e[1],pues: tempo.puesto})
+      })
+    }
+  })
+  res.send(true)
+})
+
+app.get('/requisitos', async(req,res)=>{
+  res.send(requisitos)
 })
 
 app.get('/puestos', async(req,res)=>{

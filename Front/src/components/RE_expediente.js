@@ -4,6 +4,8 @@ import {Button} from "reactstrap";
 
 const RE_expediente = () => {
     const [datos, setDatos] = useState({})
+    const [requisitos, setRequisitos] = useState({})
+    const [puesto, setPuesto] = useState('')
 
     useEffect(() => {
         var id_revision_docs;
@@ -43,6 +45,22 @@ const RE_expediente = () => {
                 field: 'descargar',
             }
             ]
+        const columns2 = [
+            {
+                label: 'Nombre',
+                field: 'requi',
+                sort: 'asc',
+                width: 150,
+                attributes: {
+                'aria-controls': 'DataTable',
+                'aria-label': 'nombre',
+                },
+            },
+            {
+                label: 'Formato',
+                field: 'forma',
+            }
+            ]
         var formdata = new FormData();
         var requestOptions = {
         method: 'GET',
@@ -60,7 +78,7 @@ const RE_expediente = () => {
         .then(response => response.json())
         .then(result =>{
             var filas = result.map( (e)=>{
-                if(e.id_usuario === id_revision_docs && e.estado === 'pendiente'){
+                if(e.id_usuario === id_revision_docs ){
                     return { ...e,aceptar:<Button color="success" onClick={()=>{ doc_aceptado(e)} }>
                 Aceptar
               </Button>, rechazar:<Button color="danger" onClick={()=>{ doc_rechazado(e)} }>
@@ -76,9 +94,18 @@ const RE_expediente = () => {
         })
         .catch(error => console.log('error', error));
 
+        fetch("http://localhost:5300/requisitos", requestOptions)
+        .then(response => response.json())
+        .then(result =>{
+            setPuesto(result[0].pues)
+            setRequisitos({columns: columns2, rows:result })
+
+        })
+        .catch(error => console.log('error', error));
+
     }, [])
 
-    const doc_aceptado = (dato)=>{
+    const doc_aceptado = async(dato)=>{
         //post
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -94,12 +121,15 @@ const RE_expediente = () => {
           redirect: 'follow'
         };
 
-        fetch("http://localhost:5300/a_documentos", requestOptions)
+        await fetch("http://localhost:5300/a_documentos", requestOptions)
           .then(response => response.text())
           .then(result => console.log(result))
           .catch(error => console.log('error', error));
+
+        window.location = '/access/revision_expedientes'
     }
-    const doc_rechazado = (dato)=>{
+    
+    const doc_rechazado = async(dato)=>{
         let motivo = prompt('Porque lo Rechazas?')
         if(motivo !== null && motivo !== ''){
             dato.motivo = motivo
@@ -118,10 +148,11 @@ const RE_expediente = () => {
               redirect: 'follow'
             };
     
-            fetch("http://localhost:5300/r_documentos", requestOptions)
+            await fetch("http://localhost:5300/r_documentos", requestOptions)
               .then(response => response.text())
               .then(result => console.log(result))
               .catch(error => console.log('error', error));
+            window.location = '/access/revision_expedientes'
         }
 
     }
@@ -133,6 +164,8 @@ const RE_expediente = () => {
     return (
         <Fragment>
             <MDBDataTableV5 hover entries={5} pagesAmount={4} data={datos} />
+            <h1>Requisitos del Puesto: {puesto}</h1>
+            <MDBDataTableV5 hover entries={5} pagesAmount={4} data={requisitos} />
         </Fragment>
     )
 }
