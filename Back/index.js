@@ -159,7 +159,7 @@ app.post('/m_empleados', async(req,res)=>{
 app.post('/e_empleados', async(req,res)=>{
   //UPDATE EMPLEADO SET ESTADO = 'inactivo' WHERE ID_EMPLEADO = ''
   let tempo = req.body.emple
-  await query_solo_insertar(`UPDATE EMPLEADO SET ESTADO = 'inactivo' WHERE ID_EMPLEADO = '${tempo.id}'`)
+  await query_solo_insertar(`UPDATE EMPLEADO SET ESTADO = 'inactivo', FECHA_FIN = TO_DATE('${tempo.fecha_fin}', 'YY-MM-DD') WHERE ID_EMPLEADO = '${tempo.id}'`)
   res.send(true)
 })
 

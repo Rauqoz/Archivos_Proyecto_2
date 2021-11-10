@@ -105,6 +105,14 @@ const AU_modificar = () => {
       const eliminar = (dato) => {
         var opcion = window.confirm("Estás Seguro que deseas Eliminar a "+dato.usuario);
         if (opcion === true) {
+          var hoy = new Date()
+          var fecha;
+          if(hoy.getDate() < 10){
+            fecha = `${hoy.getFullYear()}-${(hoy.getMonth() + 1)}-0${hoy.getDate()}`
+          }else{
+            fecha = `${hoy.getFullYear()}-${(hoy.getMonth() + 1)}-${hoy.getDate()}`
+          }
+          dato.fecha_fin = fecha
           var myHeaders = new Headers();
           myHeaders.append("Content-Type", "application/json");
 
