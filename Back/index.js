@@ -39,6 +39,15 @@ var requisitos = [ {} ]
 
 var id_revision_docs = -1;
 
+/*ver el pdf <embed
+    src={base64}
+    type="application/pdf"
+    frameBorder="0"
+    scrolling="auto"
+    height="100%"
+    width="100%"
+></embed> */
+
 app.get('/usuario_actual', (req,res)=>{
     res.send(usuario_actual)
 })
@@ -138,13 +147,12 @@ app.post('/i_aplicantes', async(req,res)=>{
   let tempo = req.body.aplica
   let random = parseInt(Math.random() * (999 - 100) + 100);
   let extesion_doc = tempo.cv.split('.')[1]
-  let nombre_doc = tempo.cv.split('.')[0]
   //tabla usuario
-  await query_solo_insertar(`INSERT INTO USUARIO (ID_ROL,PRIMER_LOG,DPI,NOMBRE,APELLIDO,CORREO,DIRECCION,TELEFONO,ID_EMPLEADO,CONTRASENA) VALUES ((SELECT ID_ROL FROM ROL r WHERE r.NOMBRE = 'guest'), 'si','${tempo.dpi}', '${tempo.nombre}','${tempo.apellido}','${tempo.correo}','${tempo.direccion}','${tempo.telefono}',(SELECT ID_EMPLEADO FROM EMPLEADO e INNER JOIN ROL r2 ON r2.ID_ROL = e.ID_ROL INNER JOIN DEPARTAMENTO d ON d.ID_DEPARTAMENTO = e.ID_DEPARTAMENTO WHERE r2.NOMBRE = 'reclutador' AND d.NOMBRE = '${tempo.dep}'), '${random}')`)
+  await query_solo_insertar(`INSERT INTO USUARIO (ID_ROL,PRIMER_LOG,DPI,NOMBRE,APELLIDO,CORREO,DIRECCION,TELEFONO,ID_EMPLEADO,CONTRASENA) VALUES ((SELECT ID_ROL FROM ROL r WHERE r.NOMBRE = 'guest'), 'si','${tempo.dpi}', '${tempo.nombre}','${tempo.apellido}','${tempo.correo}','${tempo.direccion}','${tempo.telefono}',(SELECT ID_EMPLEADO FROM EMPLEADO e INNER JOIN ROL r2 ON r2.ID_ROL = e.ID_ROL INNER JOIN DEPARTAMENTO d ON d.ID_DEPARTAMENTO = e.ID_DEPARTAMENTO WHERE r2.NOMBRE = 'reclutador' AND d.NOMBRE = '${tempo.dep}' AND e.ESTADO = 'activo'), '${random}')`)
   //tabla usuario puesto
   await query_solo_insertar(`INSERT INTO USUARIO_PUESTO (ID_USUARIO,ID_PUESTO,CALIFICACION,ESTADO) VALUES ((SELECT ID_USUARIO FROM USUARIO u WHERE u.DPI = '${tempo.dpi}'),'${tempo.id_puesto}',0,'pendiente')`)
   //tabla documento
-  await query_solo_insertar(`INSERT INTO DOCUMENTO (ID_USUARIO,ESTADO,MOTIVO,RECHAZOS,URL,EXTENSION,NOMBRE) VALUES ((SELECT ID_USUARIO FROM USUARIO u WHERE u.DPI = '${tempo.dpi}'), 'pendiente',' ',0,'${tempo.cv}','${extesion_doc}','${nombre_doc}')`)
+  await query_solo_insertar(`INSERT INTO DOCUMENTO (ID_USUARIO,ESTADO,MOTIVO,RECHAZOS,URL,EXTENSION,NOMBRE) VALUES ((SELECT ID_USUARIO FROM USUARIO u WHERE u.DPI = '${tempo.dpi}'), 'pendiente',' ',0,'${tempo.cv}','${extesion_doc}','${tempo.doc_nombre}')`)
   res.send(true)
 })
 

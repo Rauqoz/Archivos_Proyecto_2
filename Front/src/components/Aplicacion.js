@@ -27,7 +27,7 @@ const Aplicacion = () => {
         .catch(error => console.log('error', error));
     }, [])
 
-    const formulario = ()=>{
+    const formulario = async()=>{
         let dpi_f = dpi.current.value
         let nombre_f = nombre.current.value
         let apellido_f = apellido.current.value
@@ -35,7 +35,7 @@ const Aplicacion = () => {
         let direccion_f = direccion.current.value
         let telefono_f = telefono.current.value
         //post
-        let dato = {id_puesto:puesto.id,dpi:dpi_f, nombre: nombre_f, apellido: apellido_f, correo: correo_f,direccion: direccion_f, telefono: telefono_f, cv: cv_archivo.name,dep:puesto.departamento}
+        let dato = {id_puesto:puesto.id,dpi:dpi_f, nombre: nombre_f, apellido: apellido_f, correo: correo_f,direccion: direccion_f, telefono: telefono_f, cv:cv_archivo.name,doc_nombre: 'cv',dep:puesto.departamento}
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
@@ -50,16 +50,18 @@ const Aplicacion = () => {
           redirect: 'follow'
         };
 
-        fetch("http://localhost:5300/i_aplicantes", requestOptions)
+        await fetch("http://localhost:5300/i_aplicantes", requestOptions)
           .then(response => response.text())
           .then(result => console.log(result))
           .catch(error => console.log('error', error));
+
+        alert('Aplicacion Envida!')
+        window.location = '/'
     }
 
     const escoger_archivo = (file)=>{
         setCv_archivo(file)
     }
-    
     
     return (
         <Fragment>

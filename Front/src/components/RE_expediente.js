@@ -127,7 +127,7 @@ const RE_expediente = () => {
     }
 
     const doc_descargar = (dato)=>{
-        console.log('descargar doc de', dato.nombre,'en',dato.url);
+        alert(`El Doc ${dato.url}`)
     }
 
     return (
