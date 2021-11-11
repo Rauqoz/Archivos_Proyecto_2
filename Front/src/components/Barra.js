@@ -88,6 +88,7 @@ const Barra = () => {
                                     <Nav.Link href="/">Home</Nav.Link>
                                     <Nav.Link href="#">Revision de Expediente</Nav.Link>
                                     <Nav.Link href="#">Correccion de Expediente</Nav.Link>
+                                    <Nav.Link href="/access/chat">Chat con Reclutador</Nav.Link>
                                     </Nav>
                                     <Navbar.Collapse className="justify-content-end">
                                     <Navbar.Text>

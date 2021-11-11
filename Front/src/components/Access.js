@@ -10,6 +10,7 @@ import Admin_Usuarios from './Admin_Usuarios';
 import RE_aceptar from './RE_aceptar';
 import RE_expediente from './RE_expediente';
 import CO_planilla from './CO_planilla';
+import Chat from './Chat';
 
 const Acceso = () => {
 
@@ -23,6 +24,7 @@ const Acceso = () => {
                     <Route path='/access/aceptar_aplicantes' component={RE_aceptar}/>
                     <Route path='/access/revision_expedientes' component={RE_expediente}/>
                     <Route path='/access/admin_planilla' component={CO_planilla}/>
+                    <Route path='/access/chat' component={Chat}/>
                 </Switch>
             </Router>
         </Fragment>
