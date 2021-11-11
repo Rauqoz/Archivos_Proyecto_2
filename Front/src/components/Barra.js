@@ -65,6 +65,7 @@ const Barra = () => {
                                 <Nav className="me-auto">
                                 <Nav.Link href="/access/aceptar_aplicantes">Aceptar o Rechazar Aplicantes</Nav.Link>
                                 <Nav.Link href="/access/revision_expedientes">Revision de Expedientes</Nav.Link>
+                                <Nav.Link href="/access/chat">Chat con Aplicante</Nav.Link>
                                 </Nav>
                                 <Navbar.Collapse className="justify-content-end">
                                 <Navbar.Text>

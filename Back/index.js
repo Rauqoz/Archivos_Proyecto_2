@@ -354,6 +354,19 @@ app.post('/c_id_revision_docs_requis', async(req,res)=>{
   res.send(true)
 })
 
+app.get('/a_para_chat_emple', async(req,res)=>{
+  //SELECT u.ID_USUARIO FROM USUARIO u WHERE u.ID_EMPLEADO = '42'
+  let para_chatear = []
+  await query_select(`SELECT u.ID_USUARIO FROM USUARIO u WHERE u.ID_EMPLEADO = '${usuario_actual.id}'`).then(datos=>{
+    if(datos.rows.length !== 0){
+      datos.rows.forEach(e=>{
+        para_chatear.push(e[0])
+      })
+    }
+  })
+  res.send(para_chatear)
+})
+
 app.get('/requisitos', async(req,res)=>{
   res.send(requisitos)
 })
@@ -712,6 +725,64 @@ const conexion =  async(consulta)=> {
   }
 }
 
-app.listen(port, async ()=>{
+const server_rau = app.listen(port,()=>{
     console.log("server on");
 })
+
+const io = require('socket.io')(server_rau, {
+  cors: {
+    origin: "http://localhost:3000/",
+  }
+});
+
+io.on("connection", (socket) => {
+
+  socket.on('traer_chat', async(dato)=>{
+    if(dato.rol == 'aplicante'){
+      let mensajes = [], id_emple;
+      let si_tiene_chat = false;
+      await query_select(`SELECT c.ID_EMPLEADO ,c.ID_USUARIO , c.MENSAJE ,c.FECHA,e.USUARIO , u.NOMBRE FROM CHAT c INNER JOIN USUARIO u ON u.ID_USUARIO = c.ID_USUARIO INNER JOIN EMPLEADO e ON e.ID_EMPLEADO = c.ID_EMPLEADO WHERE u.ID_USUARIO = '${dato.id}'`).then(respu=>{
+        if(respu.rows.length !== 0){
+          respu.rows.forEach(e=>{
+            mensajes.push({id_e: e[0], id_a: e[1], mensaje: e[2], fecha: e[3], empleado: e[4], aplicante: e[5]})
+            id_emple = e[0];
+          })
+          si_tiene_chat = true;
+          socket.emit('recibir_chat', {mensajes,id_emple})
+        }
+      })
+
+      if(!si_tiene_chat){
+        await query_select(`SELECT u.ID_EMPLEADO FROM USUARIO u WHERE u.ID_USUARIO  = '${dato.id}'`).then(respu=>{
+          if(respu.rows.length !== 0){
+            respu.rows.forEach(e=>{
+              id_emple = e[0];
+            })
+            si_tiene_chat = true;
+            socket.emit('recibir_chat', {mensajes,id_emple})
+          }
+        })
+      }
+    }else if(dato.rol == 'reclutador'){
+      let mensajes = [], id_emple;
+      let si_tiene_chat = false;
+      await query_select(`SELECT c.ID_EMPLEADO ,c.ID_USUARIO , c.MENSAJE ,c.FECHA,e.USUARIO , u.NOMBRE FROM CHAT c INNER JOIN USUARIO u ON u.ID_USUARIO = c.ID_USUARIO INNER JOIN EMPLEADO e ON e.ID_EMPLEADO = c.ID_EMPLEADO WHERE e.ID_EMPLEADO  = '${dato.id}' AND u.ID_USUARIO = '${dato.id_a}'`).then(respu=>{
+        if(respu.rows.length !== 0){
+          respu.rows.forEach(e=>{
+            mensajes.push({id_e: e[0], id_a: e[1], mensaje: e[2], fecha: e[3], empleado: e[4], aplicante: e[5]})
+            id_emple = e[1];
+          })
+          si_tiene_chat = true;
+          socket.emit('recibir_chat', {mensajes,id_emple})
+        }
+      })
+    } 
+    
+  })
+
+  socket.on('insertar_chat', async(dato)=>{
+    await query_solo_insertar(`INSERT INTO CHAT VALUES ((SELECT e.ID_EMPLEADO FROM EMPLEADO e WHERE e.ID_EMPLEADO = '${dato.id_e}'),(SELECT u.ID_USUARIO FROM USUARIO u WHERE u.ID_USUARIO  = '${dato.id_a}'),'${dato.mensaje}',TO_DATE('${dato.fecha}', 'YY-MM-DD'))`).then(respu=>{
+      socket.emit('actualizar')
+    })
+  })
+});
