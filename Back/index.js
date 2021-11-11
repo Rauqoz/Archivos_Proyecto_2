@@ -4,6 +4,7 @@ const cors = require('cors');
 const oracledb = require('oracledb');
 const { AQ_DEQ_WAAQ_MSG_DELIV_MODE_PERSISTENTIT_FOREVER } = require('oracledb');
 const { query } = require('express');
+const nodemailer = require('nodemailer');
 //ORCL18   172.17.0.2
 //b6f6af56ce3b
 //values
@@ -18,6 +19,15 @@ app.use(cors())
 app.use(express.urlencoded({extended: true}))
 app.use(express.json())
 const port = 5300;
+
+var transporter = nodemailer.createTransport({
+  host: "smtp.mailtrap.io",
+  port: 2525,
+  auth: {
+    user: "f1b1f7f4b7126f",
+    pass: "10acba3830a45e"
+  }
+});
 
 //variables internas 
 //admin reclutador coordinador aplicante
@@ -94,13 +104,11 @@ app.post('/login', async(req,res)=>{
     }
 
   }else{
-    await query_select(`SELECT e.ID_EMPLEADO ,r.NOMBRE ,e.USUARIO,d.NOMBRE,e.ESTADO FROM EMPLEADO e INNER JOIN ROL r ON r.ID_ROL = e.ID_ROL INNER JOIN DEPARTAMENTO d ON d.ID_DEPARTAMENTO = e.ID_DEPARTAMENTO WHERE e.USUARIO = '${tempo.user}' AND e.CONTRASENA = '${tempo.pass}' AND r.NOMBRE  = 'aplicante'`).then(dato=>{
+    await query_select(`SELECT u.ID_USUARIO ,r.NOMBRE , u.NOMBRE FROM USUARIO u INNER JOIN ROL r ON u.ID_ROL = r.ID_ROL WHERE u.DPI = '${tempo.user}' AND u.CONTRASENA  = '${tempo.pass}'`).then(dato=>{
       if(dato.rows.length !== 0){
         dato.rows.forEach(e=>{
-          usuario_actual = {id: e[0], rol:e[1],name:e[2], dep:e[3]}
-          if(e[4] === 'activo'){
-            entro = true
-          }
+          usuario_actual = {id: e[0], rol:e[1],name:e[2], dep:0}
+          entro = true
         })
       }else{
         usuario_actual = undefined
@@ -195,8 +203,28 @@ app.post('/i_aplicantes', async(req,res)=>{
 app.post('/aaplicante_aplicantes', async(req,res)=>{
   //UPDATE USUARIO_PUESTO up SET up.ESTADO = 'aplicante' WHERE up.ID_USUARIO = (SELECT u.ID_USUARIO FROM USUARIO u WHERE u.DPI = '123')
   let tempo = req.body.aplica
+  let user, pass,email = false;
+  await query_select(`SELECT * FROM USUARIO u WHERE u.DPI = '${tempo.dpi}'`).then(datos=>{
+    if(datos.rows.length !== 0){
+      datos.rows.forEach(e=>{
+        user = e[3];
+        pass = e[10];
+        email = true;
+      })
+    }
+  })
+  if(email){
+    await transporter.sendMail({
+      from: '"Reclutamiento" <reclutadores@example.com>', // sender address
+      to: `${tempo.correo}, ${tempo.correo}`, // list of receivers
+      subject: `Aplicante ${tempo.id}✔`, // Subject line
+      text: `Felicidades ${tempo.nombre} ${tempo.apellido} ahora eres un aplicante, usuario ${user} y tu contraseña es ${pass}`, // plain text body
+    });
+  }
+
   await query_select(`UPDATE USUARIO_PUESTO up SET up.ESTADO = 'aplicante' WHERE up.ID_USUARIO = (SELECT u.ID_USUARIO FROM USUARIO u WHERE u.DPI = '${tempo.dpi}')`)
   await query_select(`UPDATE USUARIO u SET u.ID_ROL = (SELECT ID_ROL FROM ROL r WHERE r.NOMBRE = 'aplicante') WHERE u.DPI  = '${tempo.dpi}'`)
+
   res.send(true)
 })
 
@@ -217,6 +245,24 @@ app.post('/r_aplicantes', async(req,res)=>{
 app.post('/a_aplicantes_c', async(req,res)=>{
   //UPDATE USUARIO_PUESTO up SET up.ESTADO = 'contratado' WHERE up.ID_USUARIO = (SELECT u.ID_USUARIO FROM USUARIO u WHERE u.DPI = '123')
   let tempo = req.body.aplica
+  let user, pass,email = false;
+  await query_select(`SELECT * FROM USUARIO u WHERE u.DPI = '${tempo.dpi}'`).then(datos=>{
+    if(datos.rows.length !== 0){
+      datos.rows.forEach(e=>{
+        user = e[3];
+        pass = e[10];
+        email = true;
+      })
+    }
+  })
+  if(email){
+    await transporter.sendMail({
+      from: '"Reclutamiento" <reclutadores@example.com>', // sender address
+      to: `${tempo.correo}, ${tempo.correo}`, // list of receivers
+      subject: `Aplicante ${tempo.id}✔`, // Subject line
+      text: `Felicidades ${tempo.nombre} ${tempo.apellido} ahora eres parte del equipo con el puesto ${tempo.puesto} y tu salario de ${tempo.salario}`, // plain text body
+    });
+  }
   await query_select(`UPDATE USUARIO_PUESTO up SET up.ESTADO = 'contratado' WHERE up.ID_USUARIO = (SELECT u.ID_USUARIO FROM USUARIO u WHERE u.DPI = '${tempo.dpi}')`)
   res.send(true)
 })
@@ -258,6 +304,27 @@ app.post('/a_documentos', async(req,res)=>{
 app.post('/r_documentos', async(req,res)=>{
   //UPDATE DOCUMENTO d SET d.ESTADO = 'rechazado', d.MOTIVO = '', d.RECHAZOS  = '' WHERE d.ID_DOCUMENTO = ''
   let tempo = req.body.aplica
+
+  let user, pass,correo,email = false;
+  await query_select(`SELECT * FROM USUARIO u WHERE u.ID_USUARIO = '${tempo.id_usuario}'`).then(datos=>{
+    if(datos.rows.length !== 0){
+      datos.rows.forEach(e=>{
+        user = e[3];
+        pass = e[10];
+        correo = e[6]
+        email = true;
+      })
+    }
+  })
+  if(email){
+    await transporter.sendMail({
+      from: '"Reclutamiento" <reclutadores@example.com>', // sender address
+      to: `${correo}, ${correo}`, // list of receivers
+      subject: `Aplicante ${tempo.id_usuario}✔`, // Subject line
+      text: `Lastimosamente tu Documento ${tempo.nombre} fue Rechazado por ${tempo.motivo} con este rechazo es la ${tempo.rechazados} era. vez`, // plain text body
+    });
+  }
+  
   await query_select(`UPDATE DOCUMENTO d SET d.ESTADO = 'rechazado', d.MOTIVO = '${tempo.motivo}', d.RECHAZOS  = '${tempo.rechazados}' WHERE d.ID_DOCUMENTO = '${tempo.id}'`)
   res.send(true)
 })

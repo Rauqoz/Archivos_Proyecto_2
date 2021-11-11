@@ -117,6 +117,7 @@ const RE_aceptar = () => {
     }
     const aplicante_aceptado = async(dato)=>{
         //post
+        console.log(dato);
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
 
